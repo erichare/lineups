@@ -43,6 +43,8 @@ shinyServer(function(input, output, session) {
     })
         
     output$lineup <- renderPlot({
+        input$submit
+        
         print(
             lineup(mpg, fixed_col = "cty", permute_col = "hwy")
         )
