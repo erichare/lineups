@@ -4,11 +4,23 @@ library(shiny)
 shinyUI(fluidPage(
     
     # Application title
-    titlePanel("Hello Shiny!"),
+    titlePanel("Lineups - Shiny"),
     
     # Sidebar with a slider input for the number of bins
     sidebarLayout(
         sidebarPanel(
+            h3("Selection"),
+            textOutput("choice"),
+            br(),
+            checkboxGroupInput("reasoning", "Reasoning", choices = c("Big vertical difference" = "bvd", "Groups are separated" = "gas", "Spread is different", "Other" = "oth")),
+            conditionalPanel(condition = "input.reasoning == 'oth'",
+                textInput("other", "Other Reason")
+            ),
+            radioButtons("certain", "How certain are you? (1 = most, 5 = least)", choices = 1:5, inline = TRUE, selected = 3),
+            textInput("turk", "Your Turk ID"),
+            actionButton("submit", "Submit", icon = icon("caret-right")),
+            hr(),
+            h3("Debug Info"),
             numericInput("xcoord", "X Coord", value = 0),
             numericInput("ycoord", "Y Coord", value = 0),
             numericInput("plotwidth", "Plot Width", value = 0),
