@@ -24,7 +24,7 @@ shinyServer(function(input, output, session) {
                                    pic_id = 0, response_no = x + (4 * (y - 1)), conf_level = input$certain, 
                                    choice_reason = reason, description = "turkshiny")
                 
-                con <- dbConnect(MySQL(), user="root", password="ChrtRt5rt%",
+                con <- dbConnect(MySQL(), user="turkuser", password="turkey1sDelicious",
                                  dbname="mahbub", host="localhost")
                 
                 dbWriteTable(con, "feedback", test, append = TRUE, row.names = FALSE)
