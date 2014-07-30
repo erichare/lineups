@@ -13,6 +13,14 @@ shinyServer(function(input, output, session) {
         return(deets)
     })
     
+    experiment_details <- reactive({
+        if (input$experiment == "") return(NULL)
+        
+        my.df <- data.frame(experiment = input$experiment, lpp = input$lpp, trials_req = input$trials_req)
+        
+        return(my.df)
+    })
+    
     output$result <- renderText({
         input$submit
         
@@ -21,10 +29,11 @@ shinyServer(function(input, output, session) {
         }
         
         isolate({
-            con <- dbConnect(MySQL(), user="mahbub", password="turkey1sDelicious",
-                             dbname="mahbub", host="localhost")
+            con <- dbConnect(MySQL(), user="turkuser", password="turkey1sDelicious",
+                             dbname="lineups", host="localhost")
             
             dbWriteTable(con, "picture_details", picture_details(), append = TRUE, row.names = FALSE)
+            dbWriteTable(con, "experiment_details", experiment_details(), append = TRUE, row.names = FALSE)
             
             dbDisconnect(con)
             
