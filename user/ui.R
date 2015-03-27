@@ -11,7 +11,6 @@ shinyUI(fluidPage(
         sidebarPanel(
             h3("Selection"),
             textOutput("choice"),
-            textOutput("correctness"),
             br(),
             radioButtons("reasoning", "Reasoning", choices = c("Big vertical difference" = "bvd", "Groups are separated" = "gas", "Spread is different", "Other" = "oth")),
             conditionalPanel(condition = "input.reasoning == 'oth'",
@@ -32,8 +31,8 @@ shinyUI(fluidPage(
         # Show a plot of the generated distribution
         mainPanel(
             plotOutput("lineup"),
-            textOutput("click"),
-            uiOutput("ugh")
+            textOutput("click")
+            #uiOutput("ugh")
         )
     ),
     

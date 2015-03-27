@@ -37,6 +37,7 @@ shinyServer(function(input, output, session) {
         if (reason == "oth") reason <- paste(reason, input$other, sep = ": ")
         
         if (values$trialsleft == 0) {
+            values$result <- "Submitted!"
             test <- data.frame(ip_address = "0.0.0.0", nick_name = input$turk, start_time = values$starttime, end_time = now(), 
                                pic_id = 0, response_no = values$choice, conf_level = input$certain, 
                                choice_reason = reason, description = "turkshiny")
@@ -58,35 +59,22 @@ shinyServer(function(input, output, session) {
         }
     })
     
-    my_text <- reactive({
-        return(ifelse(values$trialsleft > 0, paste("Previous Choice:", values$result), ""))
-    })
-    
-    output$correctness <- renderText({
-        return(my_text())
-    })
-    
     output$choice <- renderText({
         x <- ceiling(values$columns * input$xcoord / input$plotwidth)
         y <- ceiling(values$rows * input$ycoord / input$plotheight)
         
         return(paste("Your Choice:", x + (values$columns * (y - 1))))
     })
-    
-    my_lineup <- reactive({
-        withProgress(message = paste("Loading", ifelse(values$trialsleft > 0, "trial", ""), "plot", ifelse(values$trialsleft > 0, paste(experiment_props()[1,"trials_req"] - values$trialsleft + 1, "of", experiment_props()[1,"trials_req"]), paste(experiment_props()[1,"lpp"] - values$lppleft + 1, "of", experiment_props()[1,"lpp"]))), expr = {            
+        
+    output$lineup <- renderPlot({
+        withProgress(message = paste(values$result, "Loading", ifelse(values$trialsleft > 0, "trial", ""), "plot", ifelse(values$trialsleft > 0, paste(experiment_props()[1,"trials_req"] - values$trialsleft + 1, "of", experiment_props()[1,"trials_req"]), paste(experiment_props()[1,"lpp"] - values$lppleft + 1, "of", experiment_props()[1,"lpp"]))), expr = {            
             input$submit
             
             values$starttime <- now()
-            correct <- sample(1:(myrows*mycols), 1)
-            values$correct <- correct
+            values$correct <- sample(1:(myrows*mycols), 1)
             
-            return(list(lineup = lineup(mpg, fixed_col = "cty", permute_col = "hwy", rows = myrows, columns = mycols, correct = correct), correct = correct))
+            print(lineup(mpg, fixed_col = "cty", permute_col = "hwy", rows = myrows, columns = mycols, correct = values$correct))
         })
-    })
-        
-    output$lineup <- renderPlot({
-        print(my_lineup()$lineup)
     })
     
     output$click <- renderText({
