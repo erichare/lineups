@@ -21,24 +21,16 @@ shinyServer(function(input, output, session) {
         return(my.df)
     })
     
-    output$result <- renderText({
-        input$submit
+    observeEvent(input$submit, {
+        con <- dbConnect(MySQL(), user="turkuser", password="Turkey1sdelicious",
+                         dbname="mahbub", host="localhost")
         
-        if (input$submit == 0) {
-            return("")
-        }
+        dbWriteTable(con, "picture_details", picture_details(), append = TRUE, row.names = FALSE)
+        dbWriteTable(con, "experiment_details", experiment_details(), append = TRUE, row.names = FALSE)
         
-        isolate({
-            con <- dbConnect(MySQL(), user="turkuser", password="turkey1sDelicious",
-                             dbname="lineups", host="localhost")
-            
-            dbWriteTable(con, "picture_details", picture_details(), append = TRUE, row.names = FALSE)
-            dbWriteTable(con, "experiment_details", experiment_details(), append = TRUE, row.names = FALSE)
-            
-            dbDisconnect(con)
-            
-            return("Submitted successfully!")
-        })
+        cat("Submitted\n")
+        
+        dbDisconnect(con)
     })
-
+    
 })
