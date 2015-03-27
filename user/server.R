@@ -6,33 +6,23 @@ library(RMySQL)
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
     
-    output$result <- renderText({            
-            input$submit
-            
-            if (input$submit == 0) {
-                return("")
-            }
-            
-            isolate({
-                x <- ceiling(4 * input$xcoord / input$plotwidth)
-                y <- ceiling(4 * input$ycoord / input$plotheight)
-                
-                reason <- input$reasoning
-                if (reason == "oth") reason <- paste(reason, input$other, sep = ": ")
-                
-                test <- data.frame(ip_address = "0.0.0.0", nick_name = input$turk, start_time = 0, end_time = 0, 
-                                   pic_id = 0, response_no = x + (4 * (y - 1)), conf_level = input$certain, 
-                                   choice_reason = reason, description = "turkshiny")
-                
-                con <- dbConnect(MySQL(), user="turkuser", password="turkey1sDelicious",
-                                 dbname="mahbub", host="localhost")
-                
-                dbWriteTable(con, "feedback", test, append = TRUE, row.names = FALSE)
-                
-                dbDisconnect(con)
-                
-                return("Submitted successfully!")
-            })
+    observeEvent(input$submit, {
+        x <- ceiling(4 * input$xcoord / input$plotwidth)
+        y <- ceiling(4 * input$ycoord / input$plotheight)
+        
+        reason <- input$reasoning
+        if (reason == "oth") reason <- paste(reason, input$other, sep = ": ")
+        
+        test <- data.frame(ip_address = "0.0.0.0", nick_name = input$turk, start_time = 0, end_time = 0, 
+                           pic_id = 0, response_no = x + (4 * (y - 1)), conf_level = input$certain, 
+                           choice_reason = reason, description = "turkshiny")
+        
+        con <- dbConnect(MySQL(), user="turkuser", password="Turkey1sdelicious",
+                         dbname="mahbub", host="localhost")
+        
+        dbWriteTable(con, "feedback", test, append = TRUE, row.names = FALSE)
+        
+        dbDisconnect(con)
     })
     
     output$choice <- renderText({
