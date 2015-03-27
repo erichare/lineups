@@ -35,7 +35,7 @@ shinyServer(function(input, output, session) {
         reason <- input$reasoning
         if (reason == "oth") reason <- paste(reason, input$other, sep = ": ")
         
-        if (values$trialsleft == 0) {
+        if (values$trialsleft == 0 && values$lppleft > 0) {
             values$result <- "Submitted!"
             test <- data.frame(ip_address = "0.0.0.0", nick_name = input$turk, start_time = values$starttime, end_time = now(), 
                                pic_id = 0, response_no = values$choice, conf_level = input$certain, 
@@ -48,6 +48,10 @@ shinyServer(function(input, output, session) {
             
             values$lppleft <- values$lppleft - 1
             dbDisconnect(con)
+            
+            if (values$lppleft == 0) {
+                values$result <- "All done! Congratulations! Your code is 32508235"
+            }
         } else {
             if (values$correct == values$choice) {
                 values$trialsleft <- values$trialsleft - 1
@@ -59,6 +63,8 @@ shinyServer(function(input, output, session) {
     })
     
     output$choice <- renderText({
+        if (values$lppleft == 0) return(values$result)
+            
         x <- ceiling(values$columns * input$xcoord / input$plotwidth)
         y <- ceiling(values$rows * input$ycoord / input$plotheight)
         
@@ -66,6 +72,8 @@ shinyServer(function(input, output, session) {
     })
         
     output$lineup <- renderPlot({
+        if (values$lppleft == 0) return(NULL)
+        
         withProgress(message = paste(values$result, "Loading", ifelse(values$trialsleft > 0, "trial", ""), "plot", ifelse(values$trialsleft > 0, paste(experiment_props()[1,"trials_req"] - values$trialsleft + 1, "of", experiment_props()[1,"trials_req"]), paste(experiment_props()[1,"lpp"] - values$lppleft + 1, "of", experiment_props()[1,"lpp"]))), expr = {            
             input$submit
             

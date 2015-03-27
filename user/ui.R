@@ -1,7 +1,8 @@
 library(shiny)
+library(shinythemes)
 
 # Define UI for application that draws a histogram
-shinyUI(fluidPage(
+shinyUI(fluidPage(theme = shinytheme("united"),
     
     # Application title
     titlePanel("Lineups - Shiny"),
@@ -21,6 +22,7 @@ shinyUI(fluidPage(
             actionButton("submit", "Submit", icon = icon("caret-right")),
             textOutput("result"),
             hr(),
+            br(),br(),br(),br(),br(),br(),br(),br(),br(),
             h3("Debug Info"),
             numericInput("xcoord", "X Coord", value = 0),
             numericInput("ycoord", "Y Coord", value = 0),
