@@ -30,8 +30,8 @@ shinyUI(fluidPage(
         
         # Show a plot of the generated distribution
         mainPanel(
-            plotOutput("lineup"),
-            textOutput("click")
+            plotOutput("lineup")
+            #textOutput("click")
             #uiOutput("ugh")
         )
     ),

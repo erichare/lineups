@@ -2,6 +2,9 @@ library(shiny)
 library(RMySQL)
 
 shinyServer(function(input, output, session) {
+    
+    values <- reactiveValues(result = "")
+    
     picture_details <- reactive({
         if (is.null(input$picture_details) | is.null(input$try_picture_details)) return(NULL)
         
@@ -16,7 +19,7 @@ shinyServer(function(input, output, session) {
     experiment_details <- reactive({
         if (input$experiment == "") return(NULL)
         
-        my.df <- data.frame(experiment = input$experiment, lpp = input$lpp, trials_req = input$trials_req)
+        my.df <- data.frame(experiment = input$experiment, lpp = input$lpp, trials_req = input$trials_req, rows = input$rows, columns = input$columns)
         
         return(my.df)
     })
@@ -27,10 +30,14 @@ shinyServer(function(input, output, session) {
         
         dbWriteTable(con, "picture_details", picture_details(), append = TRUE, row.names = FALSE)
         dbWriteTable(con, "experiment_details", experiment_details(), append = TRUE, row.names = FALSE)
-        
-        cat("Submitted\n")
+                
+        values$result <- "Submitted Successfully!"
         
         dbDisconnect(con)
+    })
+    
+    output$result <- renderText({
+        return(values$result)
     })
     
 })

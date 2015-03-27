@@ -4,13 +4,10 @@ library(ggplot2)
 library(lubridate)
 library(RMySQL)
 
-myrows <- 5
-mycols <- 3
-
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
     
-    values <- reactiveValues(choice = NULL, starttime = NULL, trialsleft = NULL, lppleft = NULL, rows = myrows, columns = mycols, choice = NULL, correct = NULL, result = "")
+    values <- reactiveValues(choice = NULL, starttime = NULL, trialsleft = NULL, lppleft = NULL, rows = NULL, columns = NULL, choice = NULL, correct = NULL, result = "")
     
     experiment_props <- reactive({
         con <- dbConnect(MySQL(), user="turkuser", password="Turkey1sdelicious",
@@ -26,6 +23,8 @@ shinyServer(function(input, output, session) {
     observe({
         values$lppleft <- experiment_props()[1,"lpp"]
         values$trialsleft <- experiment_props()[1,"trials_req"]
+        values$rows <- experiment_props()[1,"rows"]
+        values$columns <- experiment_props()[1,"columns"]
     })
     
     observeEvent(input$submit, {
@@ -71,9 +70,9 @@ shinyServer(function(input, output, session) {
             input$submit
             
             values$starttime <- now()
-            values$correct <- sample(1:(myrows*mycols), 1)
+            values$correct <- sample(1:(values$rows*values$columns), 1)
             
-            print(lineup(mpg, fixed_col = "cty", permute_col = "hwy", rows = myrows, columns = mycols, correct = values$correct))
+            print(lineup(mpg, fixed_col = "cty", permute_col = "hwy", rows = values$rows, columns = values$columns, correct = values$correct))
         })
     })
     

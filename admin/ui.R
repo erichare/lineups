@@ -7,8 +7,11 @@ shinyUI(fluidPage(
     sidebarLayout(
         sidebarPanel(
             textInput("experiment", "Experiment Name"),
+            
             numericInput("lpp", "Lineups Per Person", 10),
             numericInput("trials_req", "Correct Trials Needed", 2),
+            numericInput("rows", "Plot Rows", 4),
+            numericInput("columns", "Plot Columns", 4),
             
             hr(),
             
