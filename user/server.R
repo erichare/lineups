@@ -4,10 +4,13 @@ library(ggplot2)
 library(lubridate)
 library(RMySQL)
 
+myrows <- 5
+mycols <- 3
+
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
     
-    values <- reactiveValues(choice = NULL, starttime = NULL, lppleft = NULL)
+    values <- reactiveValues(choice = NULL, starttime = NULL, lppleft = NULL, rows = myrows, columns = mycols)
     
     experiment_props <- reactive({
         con <- dbConnect(MySQL(), user="turkuser", password="Turkey1sdelicious",
@@ -25,9 +28,9 @@ shinyServer(function(input, output, session) {
     })
     
     observeEvent(input$submit, {
-        x <- ceiling(4 * input$xcoord / input$plotwidth)
-        y <- ceiling(4 * input$ycoord / input$plotheight)
-        choice <- x + (4 * (y - 1))
+        x <- ceiling(values$columns * input$xcoord / input$plotwidth)
+        y <- ceiling(values$rows * input$ycoord / input$plotheight)
+        choice <- x + (values$columns * (y - 1))
         
         reason <- input$reasoning
         if (reason == "oth") reason <- paste(reason, input$other, sep = ": ")
@@ -47,10 +50,10 @@ shinyServer(function(input, output, session) {
     })
     
     output$choice <- renderText({
-        x <- ceiling(4 * input$xcoord / input$plotwidth)
-        y <- ceiling(4 * input$ycoord / input$plotheight)
+        x <- ceiling(values$columns * input$xcoord / input$plotwidth)
+        y <- ceiling(values$rows * input$ycoord / input$plotheight)
         
-        return(paste("Your Choice:", x + (4 * (y - 1))))
+        return(paste("Your Choice:", x + (values$columns * (y - 1))))
     })
         
     output$lineup <- renderPlot({
@@ -60,13 +63,13 @@ shinyServer(function(input, output, session) {
             values$starttime <- now()
             
             print(
-                lineup(mpg, fixed_col = "cty", permute_col = "hwy")
+                lineup(mpg, fixed_col = "cty", permute_col = "hwy", rows = myrows, columns = mycols)
             )
         })
     })
     
     output$click <- renderText({
-        return(paste("X is", ceiling(4 * input$xcoord / input$plotwidth), "and Y is", ceiling(4 * input$ycoord / input$plotheight)))
+        return(paste("X is", ceiling(values$columns * input$xcoord / input$plotwidth), "and Y is", ceiling(values$rows * input$ycoord / input$plotheight)))
     })
     
     output$ugh <- renderUI({
