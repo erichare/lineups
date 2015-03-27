@@ -1,5 +1,6 @@
 library(shiny)
 library(shinyTestR)
+library(nullabor)
 library(lineupgen)
 library(ggplot2)
 library(lubridate)
@@ -81,7 +82,7 @@ shinyServer(function(input, output, session) {
             values$starttime <- now()
             values$correct <- sample(1:(values$rows*values$columns), 1)
             
-            print(lineup(mpg, fixed_col = "cty", permute_col = "hwy", rows = values$rows, columns = values$columns, correct = values$correct))
+            print(lineupgen::lineup(mpg, fixed_col = "cty", permute_col = "hwy", rows = values$rows, columns = values$columns, correct = values$correct))
         })
     })
     
