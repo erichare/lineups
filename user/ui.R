@@ -31,9 +31,11 @@ shinyUI(fluidPage(
         # Show a plot of the generated distribution
         mainPanel(
             plotOutput("lineup"),
-            textOutput("click")
+            textOutput("click"),
+            uiOutput("ugh")
         )
     ),
     
-    includeScript("www/js/additional.js")
+    includeScript("www/js/additional.js"),
+    includeScript("www/js/action.js")
 ))
