@@ -1,4 +1,5 @@
 library(shiny)
+library(shinyTestR)
 library(lineupgen)
 library(ggplot2)
 library(lubridate)
