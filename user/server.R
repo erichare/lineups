@@ -29,20 +29,15 @@ shinyServer(function(input, output, session) {
     })
     
     observe({
+        values$experiment <- experiment_props()[1,"experiment"]
         values$lppleft <- experiment_props()[1,"lpp"]
         values$trialsleft <- experiment_props()[1,"trials_req"]
-        values$rows <- experiment_props()[1,"rows"]
-        values$columns <- experiment_props()[1,"columns"]
     })
     
     observeEvent(input$submit, {
-        x <- ceiling(values$columns * input$xcoord / input$plotwidth)
-        y <- ceiling(values$rows * input$ycoord / input$plotheight)
-        values$choice <- x + (values$columns * (y - 1))
-        
         reason <- input$reasoning
         if (reason == "oth") reason <- paste(reason, input$other, sep = ": ")
-        
+        values$choice <- input$choice
         if (values$trialsleft == 0 && values$lppleft > 0) {
             values$result <- "Submitted!"
             test <- data.frame(ip_address = "0.0.0.0", nick_name = input$turk, start_time = values$starttime, end_time = now(), 
@@ -79,24 +74,27 @@ shinyServer(function(input, output, session) {
         return(paste("Your Choice:", x + (values$columns * (y - 1))))
     })
         
-    output$lineup <- renderPlot({
+    output$lineup <- renderUI({
         if (values$lppleft == 0) return(NULL)
         
         withProgress(message = paste(values$result, "Loading", ifelse(values$trialsleft > 0, "trial", ""), "plot", ifelse(values$trialsleft > 0, paste(experiment_props()[1,"trials_req"] - values$trialsleft + 1, "of", experiment_props()[1,"trials_req"]), paste(experiment_props()[1,"lpp"] - values$lppleft + 1, "of", experiment_props()[1,"lpp"]))), expr = {            
             input$submit
             
             values$starttime <- now()
-            values$correct <- sample(1:(values$rows*values$columns), 1)
+            trial <- as.numeric(values$trialsleft > 0)
+            plotpath <- ifelse(values$trialsleft > 0, "plots", "trials")
             
-            print(lineupgen::lineup(mpg, fixed_col = "cty", permute_col = "hwy", rows = values$rows, columns = values$columns, correct = values$correct))
+            con <- dbConnect(MySQL(), user = user, password = password,
+                             dbname = dbname, host = host)
+            nextplot <- dbGetQuery(con, paste0("SELECT * FROM picture_details WHERE experiment = '", values$experiment, "' AND trial = ", trial, " ORDER BY RAND() LIMIT 1"))
+            dbDisconnect(con)
+            
+            values$correct <- nextplot$obs_plot_location
+            cat(paste0("SELECT * FROM picture_details WHERE experiment = '", values$experiment, "' AND trial = ", trial, " ORDER BY RAND() LIMIT 1"))
+            cat(file.path("experiments", values$experiment, plotpath, nextplot$pic_name))
+            cat(nextplot$pic_name)
+            
+            HTML(readLines(file.path("experiments", values$experiment, plotpath, nextplot$pic_name)))
         })
-    })
-    
-    output$click <- renderText({
-        return(paste("X is", ceiling(values$columns * input$xcoord / input$plotwidth), "and Y is", ceiling(values$rows * input$ycoord / input$plotheight)))
-    })
-    
-    output$ugh <- renderUI({
-        return(HTML(readLines("10ed1d7db72bc6fa568d46130fd7ac01.svg")))
     })
 })

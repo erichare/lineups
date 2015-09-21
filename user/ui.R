@@ -11,7 +11,7 @@ fluidPage(theme = shinytheme("cerulean"),
     sidebarLayout(
         sidebarPanel(
             h3("Selection"),
-            textOutput("choice"),
+            numericInput("choice", "Choice", value = NA, min = 1, max = 20),
             br(),
             radioButtons("reasoning", "Reasoning", choices = c("Big vertical difference" = "bvd", "Groups are separated" = "gas", "Spread is different", "Other" = "oth")),
             conditionalPanel(condition = "input.reasoning == 'oth'",
@@ -20,21 +20,12 @@ fluidPage(theme = shinytheme("cerulean"),
             radioButtons("certain", "How certain are you? (1 = most, 5 = least)", choices = 1:5, inline = TRUE, selected = 3),
             textInput("turk", "Your Turk ID"),
             actionButton("submit", "Submit", icon = icon("caret-right")),
-            textOutput("result"),
-            hr(),
-            br(),br(),br(),br(),br(),br(),br(),br(),br(),
-            h3("Debug Info"),
-            numericInput("xcoord", "X Coord", value = 0),
-            numericInput("ycoord", "Y Coord", value = 0),
-            numericInput("plotwidth", "Plot Width", value = 0),
-            numericInput("plotheight", "Plot Height", value = 0)
+            textOutput("result")
         ),
         
         # Show a plot of the generated distribution
         mainPanel(
-            plotOutput("lineup"),
-            #textOutput("click")
-            uiOutput("ugh")
+            uiOutput("lineup")
         )
     ),
     

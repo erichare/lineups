@@ -16,10 +16,10 @@ fluidPage(theme = shinytheme("cerulean"),
             
             hr(),
             
-            numericInput("rows", "Plot Rows", 4),
-            numericInput("columns", "Plot Columns", 4),
+            #numericInput("rows", "Plot Rows", 4),
+            #numericInput("columns", "Plot Columns", 4),
             
-            hr(),
+            #hr(),
             
             fileInput("picture_details", "Upload Picture Details"),
             fileInput("try_picture_details", "Upload Try Picture Details"),

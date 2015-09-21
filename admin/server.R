@@ -20,9 +20,9 @@ shinyServer(function(input, output, session) {
         ### Cleanup
         # picture_details$pic_name <- gsub("Images/Lineups/svgs/", "", as.character(picture_details$pic_name))
         # picture_details$difficulty1 <- NULL; picture_details$difficulty2 <- NULL; picture_details$difficulty3 <- NULL
-        # picture_details$trial <- FALSE
+        # picture_details$trial <- 0
         # try_picture_details$pic_name <- gsub("Images/Lineups/svgs/", "", as.character(try_picture_details$pic_name))
-        # try_picture_details$trial <- TRUE
+        # try_picture_details$trial <- 1
         
         deets <- rbind(picture_details, try_picture_details)
         
@@ -32,7 +32,7 @@ shinyServer(function(input, output, session) {
     experiment_details <- reactive({
         if (input$experiment == "") return(NULL)
         
-        my.df <- data.frame(experiment = input$experiment, lpp = input$lpp, trials_req = input$trials_req, rows = input$rows, columns = input$columns)
+        my.df <- data.frame(experiment = input$experiment, lpp = input$lpp, trials_req = input$trials_req)
         
         return(my.df)
     })
