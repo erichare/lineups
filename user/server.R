@@ -82,7 +82,7 @@ shinyServer(function(input, output, session) {
             
             values$starttime <- now()
             trial <- as.numeric(values$trialsleft > 0)
-            plotpath <- ifelse(values$trialsleft > 0, "plots", "trials")
+            plotpath <- ifelse(values$trialsleft > 0, "trials", "plots")
             
             con <- dbConnect(MySQL(), user = user, password = password,
                              dbname = dbname, host = host)
@@ -90,10 +90,7 @@ shinyServer(function(input, output, session) {
             dbDisconnect(con)
             
             values$correct <- nextplot$obs_plot_location
-            cat(paste0("SELECT * FROM picture_details WHERE experiment = '", values$experiment, "' AND trial = ", trial, " ORDER BY RAND() LIMIT 1"))
-            cat(file.path("experiments", values$experiment, plotpath, nextplot$pic_name))
-            cat(nextplot$pic_name)
-            
+
             HTML(readLines(file.path("experiments", values$experiment, plotpath, nextplot$pic_name)))
         })
     })
