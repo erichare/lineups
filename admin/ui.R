@@ -8,6 +8,7 @@ fluidPage(theme = shinytheme("cerulean"),
     sidebarLayout(
         sidebarPanel(
             textInput("experiment", "Experiment Name"),
+            textInput("experiment_question", "Experiment Question", value = "Which plot is the most different from the other plots?"),
             
             hr(),
             
@@ -15,12 +16,7 @@ fluidPage(theme = shinytheme("cerulean"),
             numericInput("trials_req", "Correct Trials Needed", 2),
             
             hr(),
-            
-            #numericInput("rows", "Plot Rows", 4),
-            #numericInput("columns", "Plot Columns", 4),
-            
-            #hr(),
-            
+
             fileInput("picture_details", "Upload Picture Details"),
             fileInput("try_picture_details", "Upload Try Picture Details"),
             

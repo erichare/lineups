@@ -32,7 +32,7 @@ shinyServer(function(input, output, session) {
     experiment_details <- reactive({
         if (input$experiment == "") return(NULL)
         
-        my.df <- data.frame(experiment = input$experiment, lpp = input$lpp, trials_req = input$trials_req)
+        my.df <- data.frame(experiment = input$experiment, question = input$experiment_question, lpp = input$lpp, trials_req = input$trials_req)
         
         return(my.df)
     })

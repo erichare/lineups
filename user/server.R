@@ -15,7 +15,7 @@ host <- "localhost"
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
     
-    values <- reactiveValues(choice = NULL, starttime = NULL, trialsleft = NULL, lppleft = NULL, rows = NULL, columns = NULL, choice = NULL, correct = NULL, result = "")
+    values <- reactiveValues(choice = NULL, starttime = NULL, trialsleft = NULL, lppleft = NULL, pic_id = 0, choice = NULL, correct = NULL, result = "")
     
     experiment_props <- reactive({
         con <- dbConnect(MySQL(), user = user, password = password,
@@ -30,8 +30,13 @@ shinyServer(function(input, output, session) {
     
     observe({
         values$experiment <- experiment_props()[1,"experiment"]
+        values$question <- experiment_props()[1,"question"]
         values$lppleft <- experiment_props()[1,"lpp"]
         values$trialsleft <- experiment_props()[1,"trials_req"]
+    })
+    
+    output$question <- renderText({
+        return(values$question)
     })
     
     observeEvent(input$submit, {
@@ -41,7 +46,7 @@ shinyServer(function(input, output, session) {
         if (values$trialsleft == 0 && values$lppleft > 0) {
             values$result <- "Submitted!"
             test <- data.frame(ip_address = "0.0.0.0", nick_name = input$turk, start_time = values$starttime, end_time = now(), 
-                               pic_id = 0, response_no = values$choice, conf_level = input$certain, 
+                               pic_id = values$pic_id, response_no = values$choice, conf_level = input$certain, 
                                choice_reason = reason, description = "turkshiny")
             
             con <- dbConnect(MySQL(), user = user, password = password,
@@ -89,6 +94,7 @@ shinyServer(function(input, output, session) {
             nextplot <- dbGetQuery(con, paste0("SELECT * FROM picture_details WHERE experiment = '", values$experiment, "' AND trial = ", trial, " ORDER BY RAND() LIMIT 1"))
             dbDisconnect(con)
             
+            values$pic_id <- nextplot$pic_id
             values$correct <- nextplot$obs_plot_location
 
             HTML(readLines(file.path("experiments", values$experiment, plotpath, nextplot$pic_name)))

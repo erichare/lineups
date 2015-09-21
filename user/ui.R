@@ -25,6 +25,8 @@ fluidPage(theme = shinytheme("cerulean"),
         
         # Show a plot of the generated distribution
         mainPanel(
+            h3(textOutput("question")),
+            hr(),
             uiOutput("lineup")
         )
     ),
