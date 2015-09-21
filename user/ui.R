@@ -2,13 +2,10 @@ library(shiny)
 library(shinythemes)
 library(shinyTestR)
 
-# Define UI for application that draws a histogram
 fluidPage(theme = shinytheme("cerulean"),
     
-    # Application title
     titlePanel("Lineups - Shiny"),
     
-    # Sidebar with a slider input for the number of bins
     sidebarLayout(
         sidebarPanel(
             inputIP("myip"),
@@ -25,7 +22,6 @@ fluidPage(theme = shinytheme("cerulean"),
             textOutput("result")
         ),
         
-        # Show a plot of the generated distribution
         mainPanel(
             h3(textOutput("question")),
             hr(),

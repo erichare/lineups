@@ -12,7 +12,6 @@ user <- "turkuser"
 password <- "Turkey1sdelicious"
 host <- "localhost"
 
-# Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
     
     outputIP(session)
