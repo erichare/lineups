@@ -1,5 +1,6 @@
 library(shiny)
 library(shinythemes)
+library(shinyTestR)
 
 # Define UI for application that draws a histogram
 fluidPage(theme = shinytheme("cerulean"),
@@ -10,6 +11,7 @@ fluidPage(theme = shinytheme("cerulean"),
     # Sidebar with a slider input for the number of bins
     sidebarLayout(
         sidebarPanel(
+            inputIP("myip"),
             h3("Selection"),
             numericInput("choice", "Choice", value = NA, min = 1, max = 20),
             br(),

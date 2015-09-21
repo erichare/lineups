@@ -15,6 +15,8 @@ host <- "localhost"
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
     
+    outputIP(session)
+    
     values <- reactiveValues(choice = NULL, starttime = NULL, trialsleft = NULL, lppleft = NULL, pic_id = 0, choice = NULL, correct = NULL, result = "")
     
     experiment_props <- reactive({
@@ -42,23 +44,25 @@ shinyServer(function(input, output, session) {
     observeEvent(input$submit, {
         reason <- input$reasoning
         if (reason == "oth") reason <- paste(reason, input$other, sep = ": ")
+        
         values$choice <- input$choice
+        
         if (values$trialsleft == 0 && values$lppleft > 0) {
             values$result <- "Submitted!"
-            test <- data.frame(ip_address = "0.0.0.0", nick_name = input$turk, start_time = values$starttime, end_time = now(), 
+            
+            test <- data.frame(ip_address = input$myip, nick_name = input$turk, start_time = values$starttime, end_time = now(), 
                                pic_id = values$pic_id, response_no = values$choice, conf_level = input$certain, 
-                               choice_reason = reason, description = "turkshiny")
+                               choice_reason = reason, description = values$experiment)
             
             con <- dbConnect(MySQL(), user = user, password = password,
                              dbname = dbname, host = host)
-            
             dbWriteTable(con, "feedback", test, append = TRUE, row.names = FALSE)
-            
-            values$lppleft <- values$lppleft - 1
             dbDisconnect(con)
             
+            values$lppleft <- values$lppleft - 1
+            
             if (values$lppleft == 0) {
-                values$result <- "All done! Congratulations! Your code is 32508235"
+                values$question <- "All done! Congratulations!\nYour code is 32508235"
             }
         } else {
             if (values$correct == values$choice) {
@@ -68,15 +72,6 @@ shinyServer(function(input, output, session) {
                 values$result <- "Incorrect :("
             }
         }
-    })
-    
-    output$choice <- renderText({
-        if (values$lppleft == 0) return(values$result)
-            
-        x <- ceiling(values$columns * input$xcoord / input$plotwidth)
-        y <- ceiling(values$rows * input$ycoord / input$plotheight)
-        
-        return(paste("Your Choice:", x + (values$columns * (y - 1))))
     })
         
     output$lineup <- renderUI({
@@ -96,7 +91,7 @@ shinyServer(function(input, output, session) {
             
             values$pic_id <- nextplot$pic_id
             values$correct <- nextplot$obs_plot_location
-
+            
             HTML(readLines(file.path("experiments", values$experiment, plotpath, nextplot$pic_name)))
         })
     })
