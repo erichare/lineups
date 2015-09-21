@@ -1,6 +1,12 @@
 library(shiny)
 library(RMySQL)
 
+## DB Information
+dbname <- "mahbub_test"
+user <- "turkuser"
+password <- "Turkey1sdelicious"
+host <- "localhost"
+
 shinyServer(function(input, output, session) {
     
     values <- reactiveValues(result = "")
@@ -25,8 +31,8 @@ shinyServer(function(input, output, session) {
     })
     
     observeEvent(input$submit, {
-        con <- dbConnect(MySQL(), user="turkuser", password="Turkey1sdelicious",
-                         dbname="mahbub", host="localhost")
+        con <- dbConnect(MySQL(), user = user, password = password,
+                         dbname = dbname, host = host)
         
         dbWriteTable(con, "picture_details", picture_details(), append = TRUE, row.names = FALSE)
         dbWriteTable(con, "experiment_details", experiment_details(), append = TRUE, row.names = FALSE)

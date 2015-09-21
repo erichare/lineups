@@ -6,14 +6,20 @@ library(ggplot2)
 library(lubridate)
 library(RMySQL)
 
+## DB Information
+dbname <- "mahbub_test"
+user <- "turkuser"
+password <- "Turkey1sdelicious"
+host <- "localhost"
+
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
     
     values <- reactiveValues(choice = NULL, starttime = NULL, trialsleft = NULL, lppleft = NULL, rows = NULL, columns = NULL, choice = NULL, correct = NULL, result = "")
     
     experiment_props <- reactive({
-        con <- dbConnect(MySQL(), user="turkuser", password="Turkey1sdelicious",
-                         dbname="mahbub", host="localhost")
+        con <- dbConnect(MySQL(), user = user, password = password,
+                         dbname = dbname, host = host)
         
         myexp <- dbReadTable(con, "experiment_details")[1,]
         
@@ -43,8 +49,8 @@ shinyServer(function(input, output, session) {
                                pic_id = 0, response_no = values$choice, conf_level = input$certain, 
                                choice_reason = reason, description = "turkshiny")
             
-            con <- dbConnect(MySQL(), user="turkuser", password="Turkey1sdelicious",
-                             dbname="mahbub", host="localhost")
+            con <- dbConnect(MySQL(), user = user, password = password,
+                             dbname = dbname, host = host)
             
             dbWriteTable(con, "feedback", test, append = TRUE, row.names = FALSE)
             

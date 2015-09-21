@@ -1,6 +1,7 @@
 library(shiny)
+library(shinythemes)
 
-shinyUI(fluidPage(
+fluidPage(theme = shinytheme("cerulean"),
     
     titlePanel("Lineups - Admin"),
     
@@ -8,8 +9,13 @@ shinyUI(fluidPage(
         sidebarPanel(
             textInput("experiment", "Experiment Name"),
             
+            hr(),
+            
             numericInput("lpp", "Lineups Per Person", 10),
             numericInput("trials_req", "Correct Trials Needed", 2),
+            
+            hr(),
+            
             numericInput("rows", "Plot Rows", 4),
             numericInput("columns", "Plot Columns", 4),
             
@@ -27,4 +33,4 @@ shinyUI(fluidPage(
             textOutput("result")
         )
     )
-))
+)

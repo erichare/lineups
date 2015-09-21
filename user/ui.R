@@ -2,7 +2,7 @@ library(shiny)
 library(shinythemes)
 
 # Define UI for application that draws a histogram
-shinyUI(fluidPage(theme = shinytheme("united"),
+fluidPage(theme = shinytheme("cerulean"),
     
     # Application title
     titlePanel("Lineups - Shiny"),
@@ -32,12 +32,12 @@ shinyUI(fluidPage(theme = shinytheme("united"),
         
         # Show a plot of the generated distribution
         mainPanel(
-            plotOutput("lineup")
+            plotOutput("lineup"),
             #textOutput("click")
-            #uiOutput("ugh")
+            uiOutput("ugh")
         )
     ),
     
     includeScript("www/js/additional.js"),
     includeScript("www/js/action.js")
-))
+)
