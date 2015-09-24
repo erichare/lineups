@@ -51,7 +51,8 @@ function writeSelectedPanel(evt, i){
       }
       if(notSelectedBefore) responses = plot ;
    }
-   top.document.getElementById('response_no').value = responses;
+   Shiny.onInputChange("response_no", responses);
+   //top.document.getElementById('response_no').value = responses;
 }
 
 function writeSelectedPanels(evt, i){
@@ -78,7 +79,8 @@ function writeSelectedPanels(evt, i){
       }
       if(notSelectedBefore) responses = responses + ","+ plot ;
    }
-   top.document.getElementById('response_no').value = responses;
+   Shiny.onInputChange("response_no", responses);
+   //top.document.getElementById('response_no').value = responses;
 }
 
 function togglehigh(evt, i) {
