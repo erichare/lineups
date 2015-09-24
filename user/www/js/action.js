@@ -52,7 +52,7 @@ function writeSelectedPanel(evt, i){
       if(notSelectedBefore) responses = plot ;
    }
    Shiny.onInputChange("response_no", responses);
-   //top.document.getElementById('response_no').value = responses;
+   top.document.getElementById('response_no').value = responses;
 }
 
 function writeSelectedPanels(evt, i){
@@ -80,34 +80,29 @@ function writeSelectedPanels(evt, i){
       if(notSelectedBefore) responses = responses + ","+ plot ;
    }
    Shiny.onInputChange("response_no", responses);
-   //top.document.getElementById('response_no').value = responses;
+   top.document.getElementById('response_no').value = responses;
 }
 
 function togglehigh(evt, i) {
   var panel = document.getElementById(i);
   if (panel.getAttribute("fill")=="#c5c5c5")
-  	panel.setAttribute("fill", "#e5e5e5");
+  	panel.setAttribute("fill", "none");
   else panel.setAttribute("fill", "#c5c5c5");
   writeSelectedPanels(evt, i);
 }
 
-var lastpanel = null;
-
 function selecthigh(evt, i) {
   var panel = document.getElementById(i);
   if (panel.getAttribute("fill")=="#c5c5c5")
-  	panel.setAttribute("fill", "#e5e5e5");
+  	panel.setAttribute("fill", "none");
   else panel.setAttribute("fill", "#c5c5c5");
-  
-  if (lastpanel) lastpanel.setAttribute("fill", "#e5e5e5");
-  lastpanel = panel;
   
   writeSelectedPanel(evt, i);
 }
 
 function dim(i) {
   var panel = document.getElementById(i);
-  panel.style.fill ="#e5e5e5";
+  panel.style.fill ="none";
 }
 
 
@@ -122,7 +117,6 @@ function deframe(i) {
   var panel = document.getElementById(i);
   panel.setAttribute("stroke-width", 0);
   panel.setAttribute("stroke-opacity", "0");
-  panel.setAttribute("stroke", "#e5e5e5");
 }
 
 

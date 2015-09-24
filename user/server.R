@@ -37,19 +37,35 @@ shinyServer(function(input, output, session) {
         values$trialsleft <- experiment_props()[1,"trials_req"]
     })
     
+    observeEvent(input$submitdemo, {
+        con <- dbConnect(MySQL(), user = user, password = password,
+                         dbname = dbname, host = host)
+        
+        demoinfo <- data.frame(nick_name = input$turk, 
+                               age = input$age,
+                               gender = input$gender,
+                               academic_study = input$education,
+                               ip_address = input$myip)
+        
+        dbWriteTable(con, "users", demoinfo, append = TRUE, row.names = FALSE)
+        dbDisconnect(con)
+        
+        updateCheckboxInput(session, "ready", value = TRUE)
+    })
+    
     output$question <- renderText({
+        if (!input$ready) return("Please fill out the demographic information to begin.")
+        
         return(values$question)
     })
     
     observeEvent(input$submit, {
-        cat(paste0("## ", input$response_no, " ##"))
-        
-        if (nchar(input$response_no) > 0 && all(strsplit(input$response_no, ",")[[1]] %in% 1:20)) {
+        if (nchar(input$response_no) > 0 && all(strsplit(input$response_no, ",")[[1]] %in% 1:20) && values$lppleft > 0) {
             
             reason <- input$reasoning
             if (reason == "oth") reason <- paste(reason, input$other, sep = ": ")
             
-            values$choice <- input$response_no
+            values$choice <- as.character(input$response_no)
             
             if (values$trialsleft == 0 && values$lppleft > 0) {
                 values$result <- "Submitted!"
@@ -69,7 +85,7 @@ shinyServer(function(input, output, session) {
                     values$question <- "All done! Congratulations!\nYour code is 32508235"
                 }
             } else {
-                if (values$correct == values$choice) {
+                if (any(strsplit(values$choice, ",")[[1]] %in% values$correct)) {
                     values$trialsleft <- values$trialsleft - 1
                     values$result <- "Correct! :)"
                 } else {
@@ -82,7 +98,7 @@ shinyServer(function(input, output, session) {
     })
         
     output$lineup <- renderUI({
-        if (values$lppleft == 0) return(NULL)
+        if (values$lppleft == 0 || !input$ready) return(NULL)
         
         withProgress(message = paste(values$result, "Loading", ifelse(values$trialsleft > 0, "trial", ""), "plot", ifelse(values$trialsleft > 0, paste(experiment_props()[1,"trials_req"] - values$trialsleft + 1, "of", experiment_props()[1,"trials_req"]), paste(experiment_props()[1,"lpp"] - values$lppleft + 1, "of", experiment_props()[1,"lpp"]))), expr = {            
             values$submitted
@@ -97,9 +113,10 @@ shinyServer(function(input, output, session) {
             dbDisconnect(con)
             
             values$pic_id <- nextplot$pic_id
-            values$correct <- nextplot$obs_plot_location
+            values$correct <- strsplit(nextplot$obs_plot_location, ",")[[1]]
             
             values$submitted <- FALSE
+            updateTextInput(session, "response_no", value = "")
             HTML(readLines(file.path("experiments", values$experiment, plotpath, nextplot$pic_name)))
         })
     })
