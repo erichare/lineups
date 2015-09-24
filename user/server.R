@@ -5,6 +5,7 @@ library(lineupgen)
 library(ggplot2)
 library(lubridate)
 library(RMySQL)
+library(shinyjs)
 
 ## DB Information
 dbname <- "mahbub_test"
@@ -16,7 +17,7 @@ shinyServer(function(input, output, session) {
     
     outputIP(session)
     
-    values <- reactiveValues(choice = NULL, starttime = NULL, trialsleft = NULL, lppleft = NULL, pic_id = 0, choice = NULL, correct = NULL, result = "")
+    values <- reactiveValues(submitted = FALSE, choice = NULL, starttime = NULL, trialsleft = NULL, lppleft = NULL, pic_id = 0, choice = NULL, correct = NULL, result = "")
     
     experiment_props <- reactive({
         con <- dbConnect(MySQL(), user = user, password = password,
@@ -28,7 +29,7 @@ shinyServer(function(input, output, session) {
         
         return(myexp)
     })
-    
+
     observe({
         values$experiment <- experiment_props()[1,"experiment"]
         values$question <- experiment_props()[1,"question"]
@@ -41,35 +42,42 @@ shinyServer(function(input, output, session) {
     })
     
     observeEvent(input$submit, {
-        reason <- input$reasoning
-        if (reason == "oth") reason <- paste(reason, input$other, sep = ": ")
+        cat(paste0("## ", input$response_no, " ##"))
         
-        values$choice <- input$choice
-        
-        if (values$trialsleft == 0 && values$lppleft > 0) {
-            values$result <- "Submitted!"
+        if (nchar(input$response_no) > 0 && all(strsplit(input$response_no, ",")[[1]] %in% 1:20)) {
             
-            test <- data.frame(ip_address = input$myip, nick_name = input$turk, start_time = values$starttime, end_time = now(), 
-                               pic_id = values$pic_id, response_no = values$choice, conf_level = input$certain, 
-                               choice_reason = reason, description = values$experiment)
+            reason <- input$reasoning
+            if (reason == "oth") reason <- paste(reason, input$other, sep = ": ")
             
-            con <- dbConnect(MySQL(), user = user, password = password,
-                             dbname = dbname, host = host)
-            dbWriteTable(con, "feedback", test, append = TRUE, row.names = FALSE)
-            dbDisconnect(con)
+            values$choice <- input$response_no
             
-            values$lppleft <- values$lppleft - 1
-            
-            if (values$lppleft == 0) {
-                values$question <- "All done! Congratulations!\nYour code is 32508235"
-            }
-        } else {
-            if (values$correct == values$choice) {
-                values$trialsleft <- values$trialsleft - 1
-                values$result <- "Correct! :)"
+            if (values$trialsleft == 0 && values$lppleft > 0) {
+                values$result <- "Submitted!"
+                
+                test <- data.frame(ip_address = input$myip, nick_name = input$turk, start_time = values$starttime, end_time = now(), 
+                                   pic_id = values$pic_id, response_no = values$choice, conf_level = input$certain, 
+                                   choice_reason = reason, description = values$experiment)
+                
+                con <- dbConnect(MySQL(), user = user, password = password,
+                                 dbname = dbname, host = host)
+                dbWriteTable(con, "feedback", test, append = TRUE, row.names = FALSE)
+                dbDisconnect(con)
+                
+                values$lppleft <- values$lppleft - 1
+                
+                if (values$lppleft == 0) {
+                    values$question <- "All done! Congratulations!\nYour code is 32508235"
+                }
             } else {
-                values$result <- "Incorrect :("
-            }
+                if (values$correct == values$choice) {
+                    values$trialsleft <- values$trialsleft - 1
+                    values$result <- "Correct! :)"
+                } else {
+                    values$result <- "Incorrect :("
+                }
+            }            
+            
+            values$submitted <- TRUE
         }
     })
         
@@ -77,7 +85,7 @@ shinyServer(function(input, output, session) {
         if (values$lppleft == 0) return(NULL)
         
         withProgress(message = paste(values$result, "Loading", ifelse(values$trialsleft > 0, "trial", ""), "plot", ifelse(values$trialsleft > 0, paste(experiment_props()[1,"trials_req"] - values$trialsleft + 1, "of", experiment_props()[1,"trials_req"]), paste(experiment_props()[1,"lpp"] - values$lppleft + 1, "of", experiment_props()[1,"lpp"]))), expr = {            
-            input$submit
+            values$submitted
             
             values$starttime <- now()
             trial <- as.numeric(values$trialsleft > 0)
@@ -91,6 +99,7 @@ shinyServer(function(input, output, session) {
             values$pic_id <- nextplot$pic_id
             values$correct <- nextplot$obs_plot_location
             
+            values$submitted <- FALSE
             HTML(readLines(file.path("experiments", values$experiment, plotpath, nextplot$pic_name)))
         })
     })
