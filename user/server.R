@@ -129,7 +129,7 @@ shinyServer(function(input, output, session) {
             lpp <- experiment_props()[1,"lpp"]
             if (trial == 0 && is.null(values$pics)) {
                 pic_ids <- sample(1:540, lpp)
-                values$pics <- dbGetQuery(con, paste0("SELECT * FROM picture_details WHERE experiment = '", values$experiment, "' AND trial = ", trial, " AND ", paste0("pic_id = ", pic_ids, collapse = " OR ")))
+                values$pics <- dbGetQuery(con, paste0("SELECT * FROM picture_details WHERE experiment = '", values$experiment, "' AND trial = ", trial, " AND pic_id IN (", paste(pic_ids, collapse = ","), ") ORDER BY FIELD(pic_id, ", paste(pic_ids, collapse = ","), ")"))
                 nextplot <- values$pics[1,]
             } else if (trial == 0 && !is.null(values$pics)) {
                 nextplot <- values$pics[lpp - values$lppleft + 1,]
