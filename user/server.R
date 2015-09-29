@@ -91,7 +91,13 @@ shinyServer(function(input, output, session) {
                 values$lppleft <- values$lppleft - 1
                 
                 if (values$lppleft == 0) {
-                    values$question <- "All done! Congratulations!\nYour code is 32508235"
+                    rand1 <- sample(letters, 3, replace = TRUE)
+                    rand2 <- sample(LETTERS, 3, replace = TRUE)
+                    rand3 <- sample(1:9, 3, replace = TRUE)
+                    
+                    code <- paste(sample(c(rand1, rand2, rand3)), collapse = "")
+                    
+                    values$question <- paste("All done! Congratulations! Your code is", code)
                 }
             } else {
                 if (any(strsplit(values$choice, ",")[[1]] %in% values$correct)) {
