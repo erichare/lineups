@@ -30,12 +30,12 @@ function radius(evt, i, factor) {
 function writeSelectedPanel(evt, i){
   var x=evt.currentTarget;
 //  alert("id of currentTarget (test message 1): "+ x.id);
- var y = top.document.getElementById("multi_response_no");
+ var y = document.getElementById("multi_response_no");
 // alert("test message 2 "+ y);
   var plot = x.id.substring(6,x.id.indexOf('.'));
 //  y.innerHTML = response;
 //alert("Hello World 2")
-   var responses = top.document.getElementById('response_no').value;
+   var responses = document.getElementById('response_no').value;
    if (responses.length < 1) {
       responses = plot ;
       } 
@@ -52,18 +52,18 @@ function writeSelectedPanel(evt, i){
       if(notSelectedBefore) responses = plot ;
    }
    Shiny.onInputChange("response_no", responses);
-   top.document.getElementById('response_no').value = responses;
+   document.getElementById('response_no').value = responses;
 }
 
 function writeSelectedPanels(evt, i){
   var x=evt.currentTarget;
 //  alert("id of currentTarget (test message 1): "+ x.id);
- var y = top.document.getElementById("multi_response_no");
+ var y = document.getElementById("multi_response_no");
 // alert("test message 2 "+ y);
   var plot = x.id.substring(6,x.id.indexOf('.'));
 //  y.innerHTML = response;
 //alert("Hello World 2")
-   var responses = top.document.getElementById('response_no').value;
+   var responses = document.getElementById('response_no').value;
    if (responses.length < 1) {
       responses = plot ;
       } 
@@ -80,7 +80,7 @@ function writeSelectedPanels(evt, i){
       if(notSelectedBefore) responses = responses + ","+ plot ;
    }
    Shiny.onInputChange("response_no", responses);
-   top.document.getElementById('response_no').value = responses;
+   document.getElementById('response_no').value = responses;
 }
 
 function togglehigh(evt, i) {
