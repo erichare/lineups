@@ -11,7 +11,7 @@ library(shinyjs)
 dbname <- "mahbub_test"
 user <- "turkuser"
 password <- "Turkey1sdelicious"
-host <- "localhost"
+host <- "104.236.245.153"
 
 ## Experiment Information
 expname <- "turk16"
