@@ -9,6 +9,7 @@ fluidPage(theme = shinytheme("cerulean"),
         sidebarPanel(
             textInput("experiment", "Experiment Name"),
             textInput("experiment_question", "Experiment Question", value = "Which plot is the most different from the other plots?"),
+            textInput("experiment_reasons", "Experiment Reasons (Comma-Separated)", value = "Strongest Trend,Groups are Separated,Large Variance,Other"),
             
             hr(),
             

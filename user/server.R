@@ -13,17 +13,21 @@ user <- "turkuser"
 password <- "Turkey1sdelicious"
 host <- "localhost"
 
+## Experiment Information
+expname <- "turk16"
+
 shinyServer(function(input, output, session) {
     
     outputIP(session)
     
-    values <- reactiveValues(submitted = FALSE, choice = NULL, starttime = NULL, trialsleft = NULL, lppleft = NULL, pic_id = 0, choice = NULL, correct = NULL, result = "")
+    values <- reactiveValues(pics = NULL, submitted = FALSE, choice = NULL, reasons = NULL, starttime = NULL, trialsleft = NULL, lppleft = NULL, pic_id = 0, choice = NULL, correct = NULL, result = "")
     
     experiment_props <- reactive({
         con <- dbConnect(MySQL(), user = user, password = password,
                          dbname = dbname, host = host)
         
-        myexp <- dbReadTable(con, "experiment_details")[1,]
+        experiments <- dbReadTable(con, "experiment_details")
+        myexp <- experiments[experiments$experiment == expname,]
         
         dbDisconnect(con)
         
@@ -33,8 +37,13 @@ shinyServer(function(input, output, session) {
     observe({
         values$experiment <- experiment_props()[1,"experiment"]
         values$question <- experiment_props()[1,"question"]
+        values$reasons <- strsplit(experiment_props()[1,"reasons"], ",")[[1]]
         values$lppleft <- experiment_props()[1,"lpp"]
         values$trialsleft <- experiment_props()[1,"trials_req"]
+    })
+    
+    observe({
+        updateRadioButtons(session, "reasoning", choices = values$reasons)
     })
     
     observeEvent(input$submitdemo, {
@@ -63,7 +72,7 @@ shinyServer(function(input, output, session) {
         if (nchar(input$response_no) > 0 && all(strsplit(input$response_no, ",")[[1]] %in% 1:20) && values$lppleft > 0) {
             
             reason <- input$reasoning
-            if (reason == "oth") reason <- paste(reason, input$other, sep = ": ")
+            if (reason == "Other") reason <- paste(reason, input$other, sep = ": ")
             
             values$choice <- as.character(input$response_no)
             
@@ -105,11 +114,23 @@ shinyServer(function(input, output, session) {
             
             values$starttime <- now()
             trial <- as.numeric(values$trialsleft > 0)
+            
             plotpath <- ifelse(values$trialsleft > 0, "trials", "plots")
             
             con <- dbConnect(MySQL(), user = user, password = password,
                              dbname = dbname, host = host)
-            nextplot <- dbGetQuery(con, paste0("SELECT * FROM picture_details WHERE experiment = '", values$experiment, "' AND trial = ", trial, " ORDER BY RAND() LIMIT 1"))
+            
+            lpp <- experiment_props()[1,"lpp"]
+            if (trial == 0 && is.null(values$pics)) {
+                pic_ids <- sample(1:540, lpp)
+                values$pics <- dbGetQuery(con, paste0("SELECT * FROM picture_details WHERE experiment = '", values$experiment, "' AND trial = ", trial, " AND ", paste0("pic_id = ", pic_ids, collapse = " OR ")))
+                nextplot <- values$pics[1,]
+            } else if (trial == 0 && !is.null(values$pics)) {
+                nextplot <- values$pics[lpp - values$lppleft + 1,]
+            } else if (trial == 1) {
+                nextplot <- dbGetQuery(con, paste0("SELECT * FROM picture_details WHERE experiment = '", values$experiment, "' AND trial = ", trial, " ORDER BY RAND() LIMIT 1"))
+            }
+            
             dbDisconnect(con)
             
             values$pic_id <- nextplot$pic_id
