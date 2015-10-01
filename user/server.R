@@ -43,7 +43,11 @@ shinyServer(function(input, output, session) {
     })
     
     observe({
-        updateRadioButtons(session, "reasoning", choices = values$reasons)
+        updateCheckboxGroupInput(session, "reasoning", choices = values$reasons, selected = NA)
+    })
+    
+    observeEvent(input$beginexp, {
+        updateCheckboxInput(session, "welcome", value = TRUE)
     })
     
     observeEvent(input$submitdemo, {
@@ -143,7 +147,11 @@ shinyServer(function(input, output, session) {
             values$correct <- strsplit(nextplot$obs_plot_location, ",")[[1]]
             
             values$submitted <- FALSE
+            
+            updateSelectizeInput(session, "certain", choices = c("", "Very Uncertain", "Uncertain", "Neutral", "Certain", "Very Certain"), selected = NULL)
             updateTextInput(session, "response_no", value = "")
+            updateCheckboxGroupInput(session, "reasoning", selected = NA)
+
             HTML(readLines(file.path("experiments", values$experiment, plotpath, nextplot$pic_name)))
         })
     })
