@@ -47,39 +47,101 @@ shinyServer(function(input, output, session) {
     })
     
     observeEvent(input$beginexp, {
-        updateCheckboxInput(session, "welcome", value = TRUE)
+        if (input$consent) updateCheckboxInput(session, "welcome", value = TRUE)
     })
     
     observeEvent(input$submitdemo, {
-        con <- dbConnect(MySQL(), user = user, password = password,
-                         dbname = dbname, host = host)
-        
-        demoinfo <- data.frame(nick_name = input$turk, 
-                               age = input$age,
-                               gender = input$gender,
-                               academic_study = input$education,
-                               ip_address = input$myip)
-        
-        dbWriteTable(con, "users", demoinfo, append = TRUE, row.names = FALSE)
-        dbDisconnect(con)
-        
-        updateCheckboxInput(session, "ready", value = TRUE)
+        if (!is.null(input$turk) && nchar(input$turk) > 0) {
+            con <- dbConnect(MySQL(), user = user, password = password,
+                             dbname = dbname, host = host)
+            
+            age <- ifelse(is.null(input$age), "", input$age)
+            gender <- ifelse(is.null(input$gender), "", input$gender)
+            academic_study <- ifelse(is.null(input$education), "", input$education)
+
+            demoinfo <- data.frame(nick_name = input$turk, 
+                                   age = age,
+                                   gender = gender,
+                                   academic_study = academic_study,
+                                   ip_address = input$myip)
+            
+            dbWriteTable(con, "users", demoinfo, append = TRUE, row.names = FALSE)
+            dbDisconnect(con)
+            
+            updateCheckboxInput(session, "ready", value = TRUE)
+        }
+    })
+    
+    output$welcome_header <- renderText({
+        return("Welcome to a Survey on Graphical Inference")
+    })
+    
+    output$welcome_text <- renderUI({
+        return(HTML("This web site is designed to conduct a survey on graphical inference which will help us understand human perception of graphics for use in communicating statistics.<br/><br/>
+
+               This research is being conducted by Susan VanderPlas under the supervision of Dr. Hofmann, Department of Statistics, Iowa State University. If you have any questions please contact Susan by email at skoons@iastate.edu.<br/><br/>
+               
+               The following examples illustrate the types of questions you may encounter during this experiment."))
+    })
+    
+    output$example1_q <- renderText({
+        return(paste0("Example 1: ", values$question))
+    })
+    
+    output$example1_plot <- renderImage({
+        list(src = file.path("experiments", values$experiment, "examples", "example1.png"),
+             contentType = 'image/png',
+             width = 600,
+             height = 150)
+    }, deleteFile = FALSE)
+    
+    output$example1_a <- renderUI({
+        return(HTML("
+            Your choice: <b>Plot 3</b><br/>
+            Reasoning: <b>Strongest linear trend</b><br/>
+            How certain are you: <b>Very Certain</b><br/>
+        "))
+    })
+    
+    output$example2_q <- renderText({
+        return(paste0("Example 2: ", values$question))
+    })
+    
+    output$example2_plot <- renderImage({
+        list(src = file.path("experiments", values$experiment, "examples", "example2.png"),
+             contentType = 'image/png',
+             width = 600,
+             height = 150)
+    }, deleteFile = FALSE)
+    
+    output$example2_a <- renderUI({
+        return(HTML("
+                    Your choice: <b>Plot 5</b><br/>
+                    Reasoning: <b>Groups are Separated</b><br/>
+                    How certain are you: <b>Certain</b><br/>
+                    "))
+    })
+    
+    output$demo_text <- renderText({
+        return("Please fill out the demographic information to begin.")
     })
     
     output$question <- renderText({
-        if (!input$ready) return("Please fill out the demographic information to begin.")
-        
         return(values$question)
     })
     
     observeEvent(input$submit, {
-        if (nchar(input$response_no) > 0 && all(strsplit(input$response_no, ",")[[1]] %in% 1:20) && values$lppleft > 0) {
+        if (nchar(input$response_no) > 0 && all(strsplit(input$response_no, ",")[[1]] %in% 1:20) && 
+            values$lppleft > 0 && length(input$reasoning) > 0 && nchar(input$certain) > 0) {
             
             reason <- input$reasoning
-            if (reason == "Other") reason <- paste(reason, input$other, sep = ": ")
+            if ("Other" %in% reason) {
+                reason[reason == "Other"] <- paste(reason[reason == "Other"], input$other, sep = ": ")  
+            }
+            reason <- paste(reason, collapse = ", ")
             
             values$choice <- as.character(input$response_no)
-            
+
             if (values$trialsleft == 0 && values$lppleft > 0) {
                 values$result <- "Submitted!"
                 

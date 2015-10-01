@@ -12,16 +12,14 @@ fluidPage(theme = shinytheme("cerulean"),
             conditionalPanel(condition = "!input.welcome",
                              h3("Welcome"),
                              
-                             helpText("In this survey a series of similar looking charts will be presented.  We would like you to respond to the following questions. 
- 	 
-                                      1. Pick the plot based on the survey question
-                                      2. Provide reasons for choice   
-                                      3. How certain are you?
-
-                                      Finally we would like to collect some information about you.
-                                      (age category, education and gender)
-                                      
-                                      Your response is voluntary and any information we collect from you will be kept confidential. By  clicking on the button below you agree that the data we collect may be used in research study."),
+                             helpText("In this survey a series of similar looking charts will be presented.  We would like you to respond to the following questions."),
+                             helpText("1. Pick the plot based on the survey question"),
+                             helpText("2. Provide reasons for choice"),
+                             helpText("3. How certain are you?"),
+                             helpText("Finally we would like to collect some information about you. (age category, education and gender)"),
+                             helpText("Your response is voluntary and any information we collect from you will be kept confidential. By  clicking on the button below you agree that the data we collect may be used in research study."),
+                             
+                             checkboxInput("consent", HTML(paste0("I have read the ", a("informed consent", href = "http://104.236.245.153:8080/mahbub/turk16/consent.html", target = "_blank"), " and agree."))),
 
                              actionButton("beginexp", "Begin Experiment")                 
             ),
@@ -48,9 +46,8 @@ fluidPage(theme = shinytheme("cerulean"),
             conditionalPanel(condition = "input.ready", 
                  h3("Selection"),
                  textInput("response_no", "Choice (Click on plot to select)", value = NA),
-                 br(),
                  checkboxGroupInput("reasoning", "Reasoning", choices = ""),
-                 conditionalPanel(condition = "input.reasoning == 'Other'",
+                 conditionalPanel(condition = "input.reasoning.indexOf('Other') > -1",
                                   textInput("other", "Other Reason")
                  ),
                  selectizeInput("certain", "How certain are you?", choices = c("", "Very Uncertain", "Uncertain", "Neutral", "Certain", "Very Certain")),
@@ -62,7 +59,24 @@ fluidPage(theme = shinytheme("cerulean"),
         ),
         
         mainPanel(
-            h3(textOutput("question")),
+            conditionalPanel(condition = "!input.welcome",
+                h3(textOutput("welcome_header")),
+                uiOutput("welcome_text"),
+                
+                h4(textOutput("example1_q")),
+                imageOutput("example1_plot", height = "150px"),
+                uiOutput("example1_a"),
+                
+                h4(textOutput("example2_q")),
+                imageOutput("example2_plot", height = "150px"),
+                uiOutput("example2_a")
+            ),
+            conditionalPanel(condition = "input.welcome && !input.ready",
+                h3(textOutput("demo_text"))
+            ),
+            conditionalPanel(condition = "input.ready",
+                h3(textOutput("question"))
+            ),
             hr(),
             uiOutput("lineup")
         )
