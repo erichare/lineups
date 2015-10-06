@@ -52,7 +52,9 @@ fluidPage(theme = shinytheme("cerulean"),
                  ),
                  selectizeInput("certain", "How certain are you?", choices = c("", "Very Uncertain", "Uncertain", "Neutral", "Certain", "Very Certain")),
                  actionButton("submit", "Submit", icon = icon("caret-right")),
-                 textOutput("result")            
+                 hr(),
+                 h3("Status"),
+                 h5(textOutput("status"))
             ),
             
             inputIP("myip")

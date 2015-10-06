@@ -1,7 +1,5 @@
 library(shiny)
 library(shinyTestR)
-library(nullabor)
-library(lineupgen)
 library(ggplot2)
 library(lubridate)
 library(RMySQL)
@@ -128,6 +126,10 @@ shinyServer(function(input, output, session) {
     
     output$question <- renderText({
         return(values$question)
+    })
+    
+    output$status <- renderText({
+        return(paste(ifelse(values$trialsleft > 0, "Trial", ""), "Plot", ifelse(values$trialsleft > 0, paste(experiment_props()[1,"trials_req"] - values$trialsleft + 1, "of", experiment_props()[1,"trials_req"]), paste(experiment_props()[1,"lpp"] - values$lppleft + 1, "of", experiment_props()[1,"lpp"]))))
     })
     
     observeEvent(input$submit, {
