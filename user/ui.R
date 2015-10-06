@@ -43,7 +43,11 @@ fluidPage(theme = shinytheme("cerulean"),
                 checkboxInput("ready", "Ready", value = FALSE)                
             ),
             
-            conditionalPanel(condition = "input.ready", 
+            conditionalPanel(condition = "input.response_no == null",
+                             checkboxInput("done", "Done", value = FALSE)                
+            ),
+            
+            conditionalPanel(condition = "input.ready && !input.done", 
                  h3("Selection"),
                  textInput("response_no", "Choice (Click on plot to select)", value = NA),
                  checkboxGroupInput("reasoning", "Reasoning", choices = ""),

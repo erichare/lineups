@@ -166,6 +166,7 @@ shinyServer(function(input, output, session) {
                     code <- paste(sample(c(rand1, rand2, rand3)), collapse = "")
                     
                     values$question <- paste("All done! Congratulations! Your code is", code)
+                    updateCheckboxInput(session, "done", value = TRUE)
                 }
             } else {
                 if (any(strsplit(values$choice, ",")[[1]] %in% values$correct)) {
