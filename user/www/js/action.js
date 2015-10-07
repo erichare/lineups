@@ -91,11 +91,16 @@ function togglehigh(evt, i) {
   writeSelectedPanels(evt, i);
 }
 
+var lastpanel = null;
+
 function selecthigh(evt, i) {
   var panel = document.getElementById(i);
   if (panel.getAttribute("fill")=="#c5c5c5")
   	panel.setAttribute("fill", "none");
   else panel.setAttribute("fill", "#c5c5c5");
+  
+  if (lastpanel != panel) lastpanel.setAttribute("fill", "none");
+  lastpanel = panel;
   
   writeSelectedPanel(evt, i);
 }
