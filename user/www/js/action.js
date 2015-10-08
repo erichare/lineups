@@ -99,7 +99,7 @@ function selecthigh(evt, i) {
   	panel.setAttribute("fill", "#ffffff");
   else panel.setAttribute("fill", "#c5c5c5");
   
-  if (lastpanel) lastpanel.setAttribute("fill", "#ffffff");
+  if (lastpanel && lastpanel != panel) lastpanel.setAttribute("fill", "#ffffff");
   lastpanel = panel;
   
   writeSelectedPanel(evt, i);
