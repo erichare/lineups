@@ -86,7 +86,7 @@ function writeSelectedPanels(evt, i){
 function togglehigh(evt, i) {
   var panel = document.getElementById(i);
   if (panel.getAttribute("fill")=="#c5c5c5")
-  	panel.setAttribute("fill", "none");
+  	panel.setAttribute("fill", "#ffffff");
   else panel.setAttribute("fill", "#c5c5c5");
   writeSelectedPanels(evt, i);
 }
@@ -96,10 +96,10 @@ var lastpanel = null;
 function selecthigh(evt, i) {
   var panel = document.getElementById(i);
   if (panel.getAttribute("fill")=="#c5c5c5")
-  	panel.setAttribute("fill", "none");
+  	panel.setAttribute("fill", "#ffffff");
   else panel.setAttribute("fill", "#c5c5c5");
   
-  if (lastpanel != panel) lastpanel.setAttribute("fill", "none");
+  if (lastpanel) lastpanel.setAttribute("fill", "#ffffff");
   lastpanel = panel;
   
   writeSelectedPanel(evt, i);
@@ -107,7 +107,7 @@ function selecthigh(evt, i) {
 
 function dim(i) {
   var panel = document.getElementById(i);
-  panel.style.fill ="none";
+  panel.style.fill ="#ffffff";
 }
 
 
@@ -122,6 +122,7 @@ function deframe(i) {
   var panel = document.getElementById(i);
   panel.setAttribute("stroke-width", 0);
   panel.setAttribute("stroke-opacity", "0");
+  panel.setAttribute("stroke", "#e5e5e5");
 }
 
 
