@@ -17,12 +17,11 @@ shinyServer(function(input, output, session) {
         picture_details <- read.csv(input$picture_details$datapath, stringsAsFactors = FALSE)
         try_picture_details <- read.csv(input$try_picture_details$datapath, stringsAsFactors = FALSE)
         
-        ### Cleanup
-        # picture_details$pic_name <- gsub("Images/Lineups/svgs/", "", as.character(picture_details$pic_name))
-        # picture_details$difficulty1 <- NULL; picture_details$difficulty2 <- NULL; picture_details$difficulty3 <- NULL
-        # picture_details$trial <- 0
-        # try_picture_details$pic_name <- gsub("Images/Lineups/svgs/", "", as.character(try_picture_details$pic_name))
-        # try_picture_details$trial <- 1
+        ## Cleanup
+        picture_details$pic_name <- gsub("Images/Lineups/svgs/", "", as.character(picture_details$pic_name))
+        picture_details$trial <- 0
+        try_picture_details$pic_name <- gsub("Images/Lineups/svgs/", "", as.character(try_picture_details$pic_name))
+        try_picture_details$trial <- 1
         
         deets <- rbind(picture_details, try_picture_details)
         
