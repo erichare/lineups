@@ -21,7 +21,7 @@ fluidPage(theme = shinytheme("cerulean"),
                              
                              checkboxInput("consent", HTML(paste0("I have read the ", a("informed consent", href = "http://104.236.245.153:8080/mahbub/turk16/consent.html", target = "_blank"), " and agree."))),
 
-                             actionButton("beginexp", "Begin Experiment")                 
+                             actionButton("beginexp", "Begin Experiment", class = "btn btn-info")                 
             ),
             conditionalPanel(condition = "input.welcome && !input.ready",
                              h3("Demographic Information"),
@@ -32,7 +32,7 @@ fluidPage(theme = shinytheme("cerulean"),
                                                                                                 "Undergraduate Degree", "Some Graduate Courses",
                                                                                                 "Graduate Degree", "I choose not to provide this information")),
                              
-                             actionButton("submitdemo", "Submit Demographics")                 
+                             actionButton("submitdemo", "Submit Demographics", class = "btn btn-info")                 
             ),
             
             conditionalPanel(condition = "input.response_no == null",
@@ -55,7 +55,7 @@ fluidPage(theme = shinytheme("cerulean"),
                                   textInput("other", "Other Reason")
                  ),
                  selectizeInput("certain", "How certain are you?", choices = c("", "Very Uncertain", "Uncertain", "Neutral", "Certain", "Very Certain")),
-                 actionButton("submit", "Submit", icon = icon("caret-right")),
+                 actionButton("submit", "Submit", icon = icon("caret-right"), class = "btn btn-info"),
                  hr(),
                  h3("Status"),
                  h5(textOutput("status"))
