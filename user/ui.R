@@ -8,7 +8,7 @@ fluidPage(theme = shinytheme("cerulean"),
     titlePanel("Lineups - Shiny"),
     
     sidebarLayout(
-        sidebarPanel(
+        sidebarPanel(width = 3,
             conditionalPanel(condition = "!input.welcome",
                              h3("Welcome"),
                              
@@ -64,7 +64,7 @@ fluidPage(theme = shinytheme("cerulean"),
             inputIP("myip")
         ),
         
-        mainPanel(
+        mainPanel(width = 9,
             conditionalPanel(condition = "!input.welcome",
                 h3(textOutput("welcome_header")),
                 uiOutput("welcome_text"),
