@@ -12,7 +12,7 @@ password <- "Turkey1sdelicious"
 host <- "104.236.245.153"
 
 ## Experiment Information
-expname <- "turk16"
+expname <- "turk19"
 
 shinyServer(function(input, output, session) {
     
