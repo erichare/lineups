@@ -5,12 +5,10 @@ library(shinyjs)
 
 fluidPage(theme = shinytheme("cerulean"),
           
-    titlePanel("Lineups - Shiny"),
-    
     sidebarLayout(
         sidebarPanel(width = 3,
             conditionalPanel(condition = "!input.welcome",
-                             h3("Welcome"),
+                             h4("Welcome"),
                              
                              helpText("In this survey a series of similar looking charts will be presented.  We would like you to respond to the following questions."),
                              helpText("1. Pick the plot based on the survey question"),
@@ -24,7 +22,7 @@ fluidPage(theme = shinytheme("cerulean"),
                              actionButton("beginexp", "Begin Experiment", class = "btn btn-info")                 
             ),
             conditionalPanel(condition = "input.welcome && !input.ready",
-                             h3("Demographic Information"),
+                             h4("Demographic Information"),
                              textInput("turk", "Turk ID"),
                              selectizeInput("age", "Age Range", choices = c("", "Under 18", "18-25", "26-30", "31-35", "36-40", "41-45", "46-50", "51-55", "56-60", "Over 60", "I choose not to provide this information")),
                              radioButtons("gender", "Gender", choices = c("Female", "Male", "I choose not to provide this information"), selected = NA),
@@ -48,7 +46,7 @@ fluidPage(theme = shinytheme("cerulean"),
             ),
             
             conditionalPanel(condition = "input.ready && !input.done", 
-                 h3("Selection"),
+                 h4("Selection"),
                  textInput("response_no", "Choice (Click on plot to select)", value = NA),
                  checkboxGroupInput("reasoning", "Reasoning", choices = ""),
                  conditionalPanel(condition = "input.reasoning.indexOf('Other') > -1",
@@ -57,7 +55,7 @@ fluidPage(theme = shinytheme("cerulean"),
                  selectizeInput("certain", "How certain are you?", choices = c("", "Very Uncertain", "Uncertain", "Neutral", "Certain", "Very Certain")),
                  actionButton("submit", "Submit", icon = icon("caret-right"), class = "btn btn-info"),
                  hr(),
-                 h3("Status"),
+                 h4("Status"),
                  h5(textOutput("status"))
             ),
             
@@ -66,7 +64,7 @@ fluidPage(theme = shinytheme("cerulean"),
         
         mainPanel(width = 9,
             conditionalPanel(condition = "!input.welcome",
-                h3(textOutput("welcome_header")),
+                h4(textOutput("welcome_header")),
                 uiOutput("welcome_text"),
                 
                 h4(textOutput("example1_q")),
@@ -78,10 +76,10 @@ fluidPage(theme = shinytheme("cerulean"),
                 uiOutput("example2_a")
             ),
             conditionalPanel(condition = "input.welcome && !input.ready",
-                h3(textOutput("demo_text"))
+                h4(textOutput("demo_text"))
             ),
             conditionalPanel(condition = "input.ready",
-                h3(textOutput("question"))
+                h4(textOutput("question"))
             ),
             hr(),
             uiOutput("lineup")
