@@ -12,7 +12,7 @@ password <- "Turkey1sdelicious"
 host <- "104.236.245.153"
 
 ## Experiment Information
-expname <- "turk19"
+expname <- "turk16"
 
 shinyServer(function(input, output, session) {
     
@@ -197,20 +197,7 @@ shinyServer(function(input, output, session) {
             
             lpp <- experiment_props()[1,"lpp"]
             if (trial == 0 && is.null(values$pics)) {
-                poss_ids <- dbGetQuery(con, paste0("SELECT DISTINCT pic_id FROM picture_details WHERE experiment = '", values$experiment, "' AND trial = ", trial))[,1]
-                
-                modded <- as.character(poss_ids %% 100)
-                modded[nchar(modded) == 1] <- paste0(0, modded[nchar(modded) == 1])
-                
-                i <- sample(1:54, lpp)
-                j <- sample(c(0:3, 0:3, sample(0:3, size = 2)))
-                k <- sample(c(0:4, 0:4))
-                
-                ids <- lapply(paste0(j, k), function(ind) {
-                    which(ind == modded)
-                })
-                
-                pic_ids <- sapply(ids, function(id) { sample(poss_ids[id], size = 1) } )
+                source(file.path("experiments", expname, "randomization.R"))
                 values$pics <- dbGetQuery(con, paste0("SELECT * FROM picture_details WHERE experiment = '", values$experiment, "' AND trial = ", trial, " AND pic_id IN (", paste(pic_ids, collapse = ","), ") ORDER BY FIELD(pic_id, ", paste(pic_ids, collapse = ","), ")"))
                 nextplot <- values$pics[1,]
             } else if (trial == 0 && !is.null(values$pics)) {
