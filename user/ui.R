@@ -85,10 +85,10 @@ fluidPage(theme = shinytheme("cerulean"),
                 h4(textOutput("demo_text"))
             ),
             conditionalPanel(condition = "input.ready",
-                h4(textOutput("question")),
-                conditionalPanel(condition = "input.done",
-                    HTML("<a href='https://prolificacademic.co.uk/submissions/56293369c8ffc200055132fd/complete?cc=XYA822O3'>https://prolificacademic.co.uk/submissions/56293369c8ffc200055132fd/complete?cc=XYA822O3</a>")
-                )
+                h4(textOutput("question"))
+                #conditionalPanel(condition = "input.done",
+                #    HTML("<a href='https://prolificacademic.co.uk/submissions/56293369c8ffc200055132fd/complete?cc=XYA822O3'>https://prolificacademic.co.uk/submissions/56293369c8ffc200055132fd/complete?cc=XYA822O3</a>")
+                #)
             ),
             hr(),
             uiOutput("lineup")
