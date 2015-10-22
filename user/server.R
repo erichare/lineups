@@ -165,7 +165,8 @@ shinyServer(function(input, output, session) {
                     
                     code <- paste(sample(c(rand1, rand2, rand3)), collapse = "")
                     
-                    values$question <- paste("All done! Congratulations! Your code is", code)
+                    #values$question <- paste("All done! Congratulations! Your code is", code)
+                    values$question <- paste("All done! Congratulations! Please click the URL to complete the study:", "https://prolificacademic.co.uk/submissions/56293369c8ffc200055132fd/complete?cc=XYA822O3")
                     updateCheckboxInput(session, "done", value = TRUE)
                 }
             } else {
