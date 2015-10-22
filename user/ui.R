@@ -38,6 +38,10 @@ fluidPage(theme = shinytheme("cerulean"),
             ),
             
             conditionalPanel(condition = "input.response_no == null",
+                             checkboxInput("otheronly", "", value = FALSE)   
+            ),
+            
+            conditionalPanel(condition = "input.response_no == null",
                 checkboxInput("ready", "Ready", value = FALSE)                
             ),
             
@@ -48,8 +52,10 @@ fluidPage(theme = shinytheme("cerulean"),
             conditionalPanel(condition = "input.ready && !input.done", 
                  h4("Selection"),
                  textInput("response_no", "Choice (Click on plot to select)", value = NA),
-                 checkboxGroupInput("reasoning", "Reasoning", choices = ""),
-                 conditionalPanel(condition = "input.reasoning.indexOf('Other') > -1",
+                 conditionalPanel(condition = "!input.otheronly",
+                    checkboxGroupInput("reasoning", "Reasoning", choices = "")
+                 ),
+                 conditionalPanel(condition = "input.reasoning.indexOf('Other') > -1 || input.otheronly",
                                   textInput("other", "Other Reason")
                  ),
                  selectizeInput("certain", "How certain are you?", choices = c("", "Very Uncertain", "Uncertain", "Neutral", "Certain", "Very Certain")),

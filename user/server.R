@@ -41,6 +41,13 @@ shinyServer(function(input, output, session) {
     })
     
     observe({
+        if (length(values$reasons) == 1) {
+            updateCheckboxInput(session, "otheronly", value = TRUE)
+            updateTextInput(session, "other", label = "Reason")
+        }
+    })
+    
+    observe({
         updateCheckboxGroupInput(session, "reasoning", choices = values$reasons, selected = NA)
     })
     
@@ -134,11 +141,10 @@ shinyServer(function(input, output, session) {
     
     observeEvent(input$submit, {
         if (nchar(input$response_no) > 0 && all(strsplit(input$response_no, ",")[[1]] %in% 1:20) && 
-            values$lppleft > 0 && length(input$reasoning) > 0 && nchar(input$certain) > 0) {
-            
+            values$lppleft > 0 && (length(input$reasoning) > 0 || (nchar(input$other) > 0)) && nchar(input$certain) > 0) {
             reason <- input$reasoning
-            if ("Other" %in% reason) {
-                reason[reason == "Other"] <- paste(reason[reason == "Other"], input$other, sep = ": ")  
+            if ("Other" %in% reason || input$otheronly) {
+                reason <- c(reason, input$other)  
             }
             reason <- paste(reason, collapse = ", ")
             
@@ -216,6 +222,7 @@ shinyServer(function(input, output, session) {
             
             updateSelectizeInput(session, "certain", choices = c("", "Very Uncertain", "Uncertain", "Neutral", "Certain", "Very Certain"), selected = NULL)
             updateTextInput(session, "response_no", value = "")
+            updateTextInput(session, "other", value = "")
             updateCheckboxGroupInput(session, "reasoning", selected = NA)
 
             HTML(readLines(file.path("experiments", values$experiment, plotpath, nextplot$pic_name)))
