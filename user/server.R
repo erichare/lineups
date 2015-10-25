@@ -12,7 +12,7 @@ password <- "Turkey1sdelicious"
 host <- "104.236.245.153"
 
 ## Experiment Information
-expname <- "turk19"
+expname <- "turk20"
 
 shinyServer(function(input, output, session) {
     
@@ -83,8 +83,6 @@ shinyServer(function(input, output, session) {
     
     output$welcome_text <- renderUI({
         return(HTML("This web site is designed to conduct a survey on graphical inference which will help us understand human perception of graphics for use in communicating statistics.<br/><br/>
-
-               This research is being conducted by Susan VanderPlas under the supervision of Dr. Hofmann, Department of Statistics, Iowa State University. If you have any questions please contact Susan by email at srvanderplas+research@gmail.com.<br/><br/>
                
                The following examples illustrate the types of questions you may encounter during this experiment."))
     })
@@ -103,7 +101,7 @@ shinyServer(function(input, output, session) {
     output$example1_a <- renderUI({
         return(HTML("
             Your choice: <b>Plot 3</b><br/>
-            Reasoning: <b>Strongest linear trend</b><br/>
+            Reasoning: <b>Similar Peaks</b><br/>
             How certain are you: <b>Very Certain</b><br/>
         "))
     })
@@ -121,8 +119,8 @@ shinyServer(function(input, output, session) {
     
     output$example2_a <- renderUI({
         return(HTML("
-                    Your choice: <b>Plot 5</b><br/>
-                    Reasoning: <b>Groups are Separated</b><br/>
+                    Your choice: <b>Plot 2</b><br/>
+                    Reasoning: <b>Similar Peaks Shifted</b><br/>
                     How certain are you: <b>Certain</b><br/>
                     "))
     })
