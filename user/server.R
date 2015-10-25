@@ -14,6 +14,9 @@ host <- "104.236.245.153"
 ## Experiment Information
 expname <- "turk20"
 
+## Randomization Information
+source(file.path("experiments", expname, "randomization.R"))
+
 shinyServer(function(input, output, session) {
     
     outputIP(session)
@@ -202,13 +205,15 @@ shinyServer(function(input, output, session) {
             
             lpp <- experiment_props()[1,"lpp"]
             if (trial == 0 && is.null(values$pics)) {
-                source(file.path("experiments", expname, "randomization.R"))
                 values$pics <- dbGetQuery(con, paste0("SELECT * FROM picture_details WHERE experiment = '", values$experiment, "' AND trial = ", trial, " AND pic_id IN (", paste(pic_ids, collapse = ","), ") ORDER BY FIELD(pic_id, ", paste(pic_ids, collapse = ","), ")"))
                 nextplot <- values$pics[1,]
             } else if (trial == 0 && !is.null(values$pics)) {
                 nextplot <- values$pics[lpp - values$lppleft + 1,]
-            } else if (trial == 1) {
-                nextplot <- dbGetQuery(con, paste0("SELECT * FROM picture_details WHERE experiment = '", values$experiment, "' AND trial = ", trial, " ORDER BY RAND() LIMIT 1"))
+            } else if (trial == 1 && is.null(values$trial_pics)) {
+                values$trial_pics <- dbGetQuery(con, paste0("SELECT * FROM picture_details WHERE experiment = '", values$experiment, "' AND trial = ", trial, " AND pic_id IN (", paste(trial_pic_ids, collapse = ","), ") ORDER BY FIELD(pic_id, ", paste(trial_pic_ids, collapse = ","), ")"))
+                nextplot <- values$trial_pics[1,]
+            } else if (trial == 1 && !is.null(values$trial_pics)) {
+                nextplot <- values$trial_pics[experiment_props()[1,"trials_req"] - values$trialsleft + 1,]
             }
             
             dbDisconnect(con)
