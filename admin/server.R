@@ -44,7 +44,9 @@ shinyServer(function(input, output, session) {
         con <- dbConnect(MySQL(), user = user, password = password,
                          dbname = dbname, host = host)
         
-        dbWriteTable(con, "picture_details", picture_details(), append = TRUE, row.names = FALSE)
+        dbGetQuery(con, paste0("DELETE FROM picture_details WHERE experiment = '", experiment_details()$experiment[1], "'"))
+        dbGetQuery(con, paste0("DELETE FROM experiment_details WHERE experiment = '", experiment_details()$experiment[1], "'"))
+        dbWriteTable(con, "picture_details", picture_details(), append = TRUE, row.names = FALSE, overwrite )
         dbWriteTable(con, "experiment_details", experiment_details(), append = TRUE, row.names = FALSE)
                 
         values$result <- "Submitted Successfully!"
