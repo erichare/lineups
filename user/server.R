@@ -14,12 +14,11 @@ host <- "104.236.245.153"
 ## Experiment Information
 expname <- "turk20"
 
-## Randomization Information
-source(file.path("experiments", expname, "randomization.R"))
-
 shinyServer(function(input, output, session) {
     
     outputIP(session)
+    
+    source(file.path("experiments", expname, "randomization.R"))
     
     values <- reactiveValues(pics = NULL, submitted = FALSE, choice = NULL, reasons = NULL, starttime = NULL, trialsleft = NULL, lppleft = NULL, pic_id = 0, choice = NULL, correct = NULL, result = "")
     
