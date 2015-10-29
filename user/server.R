@@ -66,7 +66,7 @@ shinyServer(function(input, output, session) {
                                    age = age,
                                    gender = gender,
                                    academic_study = academic_study,
-                                   ip_address = input$myip)
+                                   ip_address = "")
             
             dbWriteTable(con, "users", demoinfo, append = TRUE, row.names = FALSE)
             dbDisconnect(con)
