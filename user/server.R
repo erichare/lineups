@@ -12,7 +12,7 @@ password <- "Turkey1sdelicious"
 host <- "104.236.245.153"
 
 ## Experiment Information
-expname <- "turk20"
+expname <- "turk19"
 
 shinyServer(function(input, output, session) {
     
@@ -103,7 +103,7 @@ shinyServer(function(input, output, session) {
     output$example1_a <- renderUI({
         return(HTML("
             Your choice: <b>Plot 3</b><br/>
-            Reasoning: <b>Similar Peaks</b><br/>
+            Reasoning: <b>Strongest Linear Trend</b><br/>
             How certain are you: <b>Very Certain</b><br/>
         "))
     })
@@ -121,8 +121,8 @@ shinyServer(function(input, output, session) {
     
     output$example2_a <- renderUI({
         return(HTML("
-                    Your choice: <b>Plot 2</b><br/>
-                    Reasoning: <b>Similar Peaks Shifted</b><br/>
+                    Your choice: <b>Plot 5</b><br/>
+                    Reasoning: <b>Groups Separated</b><br/>
                     How certain are you: <b>Certain</b><br/>
                     "))
     })
@@ -171,8 +171,8 @@ shinyServer(function(input, output, session) {
                     
                     code <- paste(sample(c(rand1, rand2, rand3)), collapse = "")
                     
-                    #values$question <- paste("All done! Congratulations! Your code is", code)
-                    values$question <- paste("All done! Congratulations! Please click the URL to complete the study:")
+                    values$question <- paste("All done! Congratulations! Your code is", code)
+                    #values$question <- paste("All done! Congratulations! Please click the URL to complete the study:")
                     updateCheckboxInput(session, "done", value = TRUE)
                 }
             } else {

@@ -23,7 +23,7 @@ fluidPage(theme = shinytheme("cerulean"),
             ),
             conditionalPanel(condition = "input.welcome && !input.ready",
                              h4("Demographic Information"),
-                             textInput("turk", "Prolific ID"),
+                             textInput("turk", "Turk ID"),
                              selectizeInput("age", "Age Range", choices = c("", "Under 18", "18-25", "26-30", "31-35", "36-40", "41-45", "46-50", "51-55", "56-60", "Over 60", "I choose not to provide this information")),
                              radioButtons("gender", "Gender", choices = c("Female", "Male", "I choose not to provide this information"), selected = NA),
                              selectizeInput("education", "Highest Education Level", choices = c("", "High School or Less", "Some Undergraduate Courses",
@@ -85,10 +85,10 @@ fluidPage(theme = shinytheme("cerulean"),
                 h4(textOutput("demo_text"))
             ),
             conditionalPanel(condition = "input.ready",
-                h4(textOutput("question")),
-                conditionalPanel(condition = "input.done",
-                    HTML("<a href='https://prolificacademic.co.uk/submissions/562d580f733ea00005163510/complete?cc=FWJKYUBX'>https://prolificacademic.co.uk/submissions/562d580f733ea00005163510/complete?cc=FWJKYUBX</a>")
-                )
+                h4(textOutput("question"))
+                #conditionalPanel(condition = "input.done",
+                #    HTML("<a href='https://prolificacademic.co.uk/submissions/56293369c8ffc200055132fd/complete?cc=XYA822O3'>https://prolificacademic.co.uk/submissions/56293369c8ffc200055132fd/complete?cc=XYA822O3</a>")
+                #)
             ),
             hr(),
             uiOutput("lineup")

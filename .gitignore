@@ -1,10 +1,9 @@
 .Rproj.user
 .Rhistory
 .RData
-user/experiments
 
-user/rsconnect/shinyapps.io/bill/turk16.dcf
+user/experiments/*/plots
+user/experiments/*/trials
+user/experiments/*/examples
 
-user/rsconnect/shinyapps.io/bill/turk19.dcf
-
-*.dcf
+user/rsconnect
