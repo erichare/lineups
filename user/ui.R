@@ -63,9 +63,7 @@ fluidPage(theme = shinytheme("cerulean"),
                  hr(),
                  h4("Status"),
                  h5(textOutput("status"))
-            ),
-            
-            inputIP("myip")
+            )
         ),
         
         mainPanel(width = 9,

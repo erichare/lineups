@@ -1,9 +1,7 @@
 library(shiny)
-library(shinyTestR)
 library(ggplot2)
 library(lubridate)
 library(RMySQL)
-library(shinyjs)
 
 ## DB Information
 dbname <- "mahbub_test"
@@ -15,8 +13,6 @@ host <- "104.236.245.153"
 expname <- "turk19"
 
 shinyServer(function(input, output, session) {
-    
-    outputIP(session)
     
     source(file.path("experiments", expname, "randomization.R"))
     
@@ -153,7 +149,7 @@ shinyServer(function(input, output, session) {
             if (values$trialsleft == 0 && values$lppleft > 0) {
                 values$result <- "Submitted!"
                 
-                test <- data.frame(ip_address = input$myip, nick_name = input$turk, start_time = values$starttime, end_time = now(), 
+                test <- data.frame(ip_address = "", nick_name = input$turk, start_time = values$starttime, end_time = now(), 
                                    pic_id = values$pic_id, response_no = values$choice, conf_level = input$certain, 
                                    choice_reason = reason, description = values$experiment)
                 
