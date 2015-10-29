@@ -1,7 +1,5 @@
 library(shiny)
 library(shinythemes)
-library(shinyTestR)
-library(shinyjs)
 
 fluidPage(theme = shinytheme("cerulean"),
           
