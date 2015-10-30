@@ -1,7 +1,10 @@
 library(shiny)
+library(shinyjs)
 library(shinythemes)
 
 fluidPage(theme = shinytheme("cerulean"),
+          
+    useShinyjs(),
           
     sidebarLayout(
         sidebarPanel(width = 3,
@@ -49,7 +52,7 @@ fluidPage(theme = shinytheme("cerulean"),
             
             conditionalPanel(condition = "input.ready && !input.done", 
                  h4("Selection"),
-                 textInput("response_no", "Choice (Click on plot to select)", value = NA),
+                 textInput("response_no", "Choice (Click on plot to select)", value = ""),
                  conditionalPanel(condition = "!input.otheronly",
                     checkboxGroupInput("reasoning", "Reasoning", choices = "")
                  ),

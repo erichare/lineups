@@ -1,4 +1,5 @@
 library(shiny)
+library(shinyjs)
 library(ggplot2)
 library(lubridate)
 library(RMySQL)
@@ -135,9 +136,18 @@ shinyServer(function(input, output, session) {
         return(paste(ifelse(values$trialsleft > 0, "Trial", ""), "Plot", ifelse(values$trialsleft > 0, paste(experiment_props()[1,"trials_req"] - values$trialsleft + 1, "of", experiment_props()[1,"trials_req"]), paste(experiment_props()[1,"lpp"] - values$lppleft + 1, "of", experiment_props()[1,"lpp"]))))
     })
     
+    observe({
+        if (input$response_no == "") {
+            enable("submit")
+        }
+    })
+    
     observeEvent(input$submit, {
         if (nchar(input$response_no) > 0 && all(strsplit(input$response_no, ",")[[1]] %in% 1:20) && 
             values$lppleft > 0 && (length(input$reasoning) > 0 || (nchar(input$other) > 0)) && nchar(input$certain) > 0) {
+            
+            disable("submit")
+            
             reason <- input$reasoning
             if ("Other" %in% reason || input$otheronly) {
                 reason <- c(reason, input$other)  
@@ -159,6 +169,7 @@ shinyServer(function(input, output, session) {
                 dbDisconnect(con)
                 
                 values$lppleft <- values$lppleft - 1
+                values$choice <- ""
                 
                 if (values$lppleft == 0) {
                     rand1 <- sample(letters, 3, replace = TRUE)
@@ -222,7 +233,7 @@ shinyServer(function(input, output, session) {
             updateTextInput(session, "response_no", value = "")
             updateTextInput(session, "other", value = "")
             updateCheckboxGroupInput(session, "reasoning", selected = NA)
-
+            
             HTML(readLines(file.path("experiments", values$experiment, plotpath, nextplot$pic_name)))
         })
     })
