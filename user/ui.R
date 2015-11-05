@@ -8,7 +8,11 @@ fluidPage(theme = shinytheme("cerulean"),
           
     sidebarLayout(
         sidebarPanel(width = 3,
-            conditionalPanel(condition = "!input.welcome",
+            conditionalPanel(condition = "!input.expchosen",
+                             selectizeInput("expname", "Experiment", choices = NULL),
+                             actionButton("confirmexp", "Confirm Choice")
+            ),
+            conditionalPanel(condition = "input.expchosen && !input.welcome",
                              h4("Welcome"),
                              
                              helpText("In this survey a series of similar looking charts will be presented.  We would like you to respond to the following questions."),
@@ -32,6 +36,10 @@ fluidPage(theme = shinytheme("cerulean"),
                                                                                                 "Graduate Degree", "I choose not to provide this information")),
                              
                              actionButton("submitdemo", "Submit Demographics", class = "btn btn-info")                 
+            ),
+            
+            conditionalPanel(condition = "input.response_no == null",
+                             checkboxInput("expchosen", "Experiment Chosen", value = FALSE)                
             ),
             
             conditionalPanel(condition = "input.response_no == null",
@@ -68,7 +76,13 @@ fluidPage(theme = shinytheme("cerulean"),
         ),
         
         mainPanel(width = 9,
-            conditionalPanel(condition = "!input.welcome",
+            conditionalPanel(condition = "!input.expchosen",
+                    h4("Description of Experiments"),
+                    helpText("Experiment #16: Examining the use of color and its effect on the perception of plots."),
+                    helpText("Experiment #19: Follow up to Experiment #16, examining the use of color and its effect on the perception of plots."),
+                    helpText("Experiment #20: Pilot study assessing the similarity between curves derived from images of bullets.")
+            ),
+            conditionalPanel(condition = "input.expchosen && !input.welcome",
                 h4(textOutput("welcome_header")),
                 uiOutput("welcome_text"),
                 

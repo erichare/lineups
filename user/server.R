@@ -10,21 +10,38 @@ user <- "turkuser"
 password <- "Turkey1sdelicious"
 host <- "104.236.245.153"
 
-## Experiment Information
-expname <- "turk19"
-
 shinyServer(function(input, output, session) {
     
-    source(file.path("experiments", expname, "randomization.R"))
-    
     values <- reactiveValues(pics = NULL, submitted = FALSE, choice = NULL, reasons = NULL, starttime = NULL, trialsleft = NULL, lppleft = NULL, pic_id = 0, choice = NULL, correct = NULL, result = "")
+    
+    experiment_choices <- reactive({
+        con <- dbConnect(MySQL(), user = user, password = password,
+                         dbname = dbname, host = host)
+        
+        experiments <- dbReadTable(con, "experiment_details")
+        
+        dbDisconnect(con)
+        
+        return(experiments$experiment)
+    })
+    
+    observe({
+        updateSelectizeInput(session, "expname", choices = experiment_choices())
+    })
+    
+    observeEvent(input$confirmexp, {
+        if (nchar(input$expname) > 0) {
+            updateCheckboxInput(session, "expchosen", value = TRUE)
+            source(file.path("experiments", input$expname, "randomization.R"))
+        }
+    })
     
     experiment_props <- reactive({
         con <- dbConnect(MySQL(), user = user, password = password,
                          dbname = dbname, host = host)
         
         experiments <- dbReadTable(con, "experiment_details")
-        myexp <- experiments[experiments$experiment == expname,]
+        myexp <- experiments[experiments$experiment == input$expname,]
         
         dbDisconnect(con)
         
