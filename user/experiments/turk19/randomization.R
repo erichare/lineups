@@ -1,15 +1,8 @@
-library(RMySQL)
+library(RSQLite)
 
 trial_pic_ids <- sample(1:20, size = 2)
 
-## DB Information
-dbname <- "mahbub_test"
-user <- "turkuser"
-password <- "Turkey1sdelicious"
-host <- "104.236.245.153"
-
-con <- dbConnect(MySQL(), user = user, password = password,
-                 dbname = dbname, host = host)
+con <- dbConnect(SQLite(), dbname = "data/turk.db")
 
 poss_ids <- dbGetQuery(con, paste0("SELECT DISTINCT pic_id FROM picture_details WHERE experiment = '", "turk19", "' AND trial = ", 0))[,1]
 

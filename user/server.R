@@ -2,21 +2,14 @@ library(shiny)
 library(shinyjs)
 library(ggplot2)
 library(lubridate)
-library(RMySQL)
-
-## DB Information
-dbname <- "mahbub_test"
-user <- "turkuser"
-password <- "Turkey1sdelicious"
-host <- "104.236.245.153"
+library(RSQLite)
 
 shinyServer(function(input, output, session) {
     
     values <- reactiveValues(pics = NULL, submitted = FALSE, choice = NULL, reasons = NULL, starttime = NULL, trialsleft = NULL, lppleft = NULL, pic_id = 0, choice = NULL, correct = NULL, result = "")
     
     experiment_choices <- reactive({
-        con <- dbConnect(MySQL(), user = user, password = password,
-                         dbname = dbname, host = host)
+        con <- dbConnect(SQLite(), dbname = "data/turk.db")
         
         experiments <- dbReadTable(con, "experiment_details")
         
@@ -37,8 +30,7 @@ shinyServer(function(input, output, session) {
     })
     
     experiment_props <- reactive({
-        con <- dbConnect(MySQL(), user = user, password = password,
-                         dbname = dbname, host = host)
+        con <- dbConnect(SQLite(), dbname = "data/turk.db")
         
         experiments <- dbReadTable(con, "experiment_details")
         myexp <- experiments[experiments$experiment == input$expname,]
@@ -73,8 +65,7 @@ shinyServer(function(input, output, session) {
     
     observeEvent(input$submitdemo, {
         if (!is.null(input$turk) && nchar(input$turk) > 0) {
-            con <- dbConnect(MySQL(), user = user, password = password,
-                             dbname = dbname, host = host)
+            con <- dbConnect(SQLite(), dbname = "data/turk.db")
             
             age <- ifelse(is.null(input$age), "", input$age)
             gender <- ifelse(is.null(input$gender), "", input$gender)
@@ -180,8 +171,8 @@ shinyServer(function(input, output, session) {
                                    pic_id = values$pic_id, response_no = values$choice, conf_level = input$certain, 
                                    choice_reason = reason, description = values$experiment)
                 
-                con <- dbConnect(MySQL(), user = user, password = password,
-                                 dbname = dbname, host = host)
+                con <- dbConnect(SQLite(), dbname = "data/turk.db")
+                
                 dbWriteTable(con, "feedback", test, append = TRUE, row.names = FALSE)
                 dbDisconnect(con)
                 
@@ -223,17 +214,18 @@ shinyServer(function(input, output, session) {
             
             plotpath <- ifelse(values$trialsleft > 0, "trials", "plots")
             
-            con <- dbConnect(MySQL(), user = user, password = password,
-                             dbname = dbname, host = host)
+            con <- dbConnect(SQLite(), dbname = "data/turk.db")
             
             lpp <- experiment_props()[1,"lpp"]
             if (trial == 0 && is.null(values$pics)) {
-                values$pics <- dbGetQuery(con, paste0("SELECT * FROM picture_details WHERE experiment = '", values$experiment, "' AND trial = ", trial, " AND pic_id IN (", paste(pic_ids, collapse = ","), ") ORDER BY FIELD(pic_id, ", paste(pic_ids, collapse = ","), ")"))
+                orderby <- paste0("ORDER BY CASE pic_id ", paste("WHEN", pic_ids, "THEN", 0:(lpp - 1), collapse = " "), " END")
+                values$pics <- dbGetQuery(con, paste0("SELECT * FROM picture_details WHERE experiment = '", values$experiment, "' AND trial = ", trial, " AND pic_id IN (", paste(pic_ids, collapse = ","), ") ", orderby))
                 nextplot <- values$pics[1,]
             } else if (trial == 0 && !is.null(values$pics)) {
                 nextplot <- values$pics[lpp - values$lppleft + 1,]
             } else if (trial == 1 && is.null(values$trial_pics)) {
-                values$trial_pics <- dbGetQuery(con, paste0("SELECT * FROM picture_details WHERE experiment = '", values$experiment, "' AND trial = ", trial, " AND pic_id IN (", paste(trial_pic_ids, collapse = ","), ") ORDER BY FIELD(pic_id, ", paste(trial_pic_ids, collapse = ","), ")"))
+                orderby <- paste0("ORDER BY CASE pic_id ", paste("WHEN", trial_pic_ids, "THEN", 0:(length(trial_pic_ids) - 1), collapse = " "), " END")
+                values$trial_pics <- dbGetQuery(con, paste0("SELECT * FROM picture_details WHERE experiment = '", values$experiment, "' AND trial = ", trial, " AND pic_id IN (", paste(trial_pic_ids, collapse = ","), ") ", orderby))
                 nextplot <- values$trial_pics[1,]
             } else if (trial == 1 && !is.null(values$trial_pics)) {
                 nextplot <- values$trial_pics[experiment_props()[1,"trials_req"] - values$trialsleft + 1,]

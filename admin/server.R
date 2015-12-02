@@ -1,11 +1,5 @@
 library(shiny)
-library(RMySQL)
-
-## DB Information
-dbname <- "mahbub_test"
-user <- "turkuser"
-password <- "Turkey1sdelicious"
-host <- "104.236.245.153"
+library(RSQLite)
 
 shinyServer(function(input, output, session) {
     
@@ -41,12 +35,11 @@ shinyServer(function(input, output, session) {
     })
     
     observeEvent(input$submit, {
-        con <- dbConnect(MySQL(), user = user, password = password,
-                         dbname = dbname, host = host)
+        con <- dbConnect(SQLite(), dbname = "data/turk.db")
         
-        dbGetQuery(con, paste0("DELETE FROM picture_details WHERE experiment = '", experiment_details()$experiment[1], "'"))
-        dbGetQuery(con, paste0("DELETE FROM experiment_details WHERE experiment = '", experiment_details()$experiment[1], "'"))
-        dbWriteTable(con, "picture_details", picture_details(), append = TRUE, row.names = FALSE, overwrite )
+        try({dbGetQuery(con, paste0("DELETE FROM picture_details WHERE experiment = '", experiment_details()$experiment[1], "'"))})
+        try({dbGetQuery(con, paste0("DELETE FROM experiment_details WHERE experiment = '", experiment_details()$experiment[1], "'"))})
+        dbWriteTable(con, "picture_details", picture_details(), append = TRUE, row.names = FALSE)
         dbWriteTable(con, "experiment_details", experiment_details(), append = TRUE, row.names = FALSE)
                 
         values$result <- "Submitted Successfully!"
