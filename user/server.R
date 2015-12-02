@@ -6,7 +6,7 @@ library(RSQLite)
 
 shinyServer(function(input, output, session) {
     
-    values <- reactiveValues(pics = NULL, submitted = FALSE, choice = NULL, reasons = NULL, starttime = NULL, trialsleft = NULL, lppleft = NULL, pic_id = 0, choice = NULL, correct = NULL, result = "")
+    values <- reactiveValues(question = "", pics = NULL, submitted = FALSE, choice = NULL, reasons = NULL, starttime = NULL, trialsreq = 0, trialsleft = 0, lpp = 0, lppleft = 0, pic_id = 0, choice = NULL, correct = NULL, result = "")
     
     experiment_choices <- reactive({
         con <- dbConnect(SQLite(), dbname = "data/turk.db")
@@ -24,30 +24,26 @@ shinyServer(function(input, output, session) {
     
     observeEvent(input$confirmexp, {
         if (nchar(input$expname) > 0) {
+            con <- dbConnect(SQLite(), dbname = "data/turk.db")
+            
+            experiments <- dbReadTable(con, "experiment_details")
+            myexp <- experiments[experiments$experiment == input$expname,]
+            
+            values$experiment <- myexp[1,"experiment"]
+            values$question <- myexp[1,"question"]
+            values$reasons <- strsplit(myexp[1,"reasons"], ",")[[1]]
+            values$lpp <- myexp[1,"lpp"]
+            values$lppleft <- myexp[1,"lpp"]
+            values$trialsreq <- myexp[1,"trials_req"]
+            values$trialsleft <- myexp[1,"trials_req"]
+            
+            dbDisconnect(con)
+            
             updateCheckboxInput(session, "expchosen", value = TRUE)
             source(file.path("experiments", input$expname, "randomization.R"))
         }
     })
-    
-    experiment_props <- reactive({
-        con <- dbConnect(SQLite(), dbname = "data/turk.db")
-        
-        experiments <- dbReadTable(con, "experiment_details")
-        myexp <- experiments[experiments$experiment == input$expname,]
-        
-        dbDisconnect(con)
-        
-        return(myexp)
-    })
 
-    observe({
-        values$experiment <- experiment_props()[1,"experiment"]
-        values$question <- experiment_props()[1,"question"]
-        values$reasons <- strsplit(experiment_props()[1,"reasons"], ",")[[1]]
-        values$lppleft <- experiment_props()[1,"lpp"]
-        values$trialsleft <- experiment_props()[1,"trials_req"]
-    })
-    
     observe({
         if (length(values$reasons) == 1) {
             updateCheckboxInput(session, "otheronly", value = TRUE)
@@ -141,7 +137,7 @@ shinyServer(function(input, output, session) {
     })
     
     output$status <- renderText({
-        return(paste(ifelse(values$trialsleft > 0, "Trial", ""), "Plot", ifelse(values$trialsleft > 0, paste(experiment_props()[1,"trials_req"] - values$trialsleft + 1, "of", experiment_props()[1,"trials_req"]), paste(experiment_props()[1,"lpp"] - values$lppleft + 1, "of", experiment_props()[1,"lpp"]))))
+        return(paste(ifelse(values$trialsleft > 0, "Trial", ""), "Plot", ifelse(values$trialsleft > 0, paste(values$trialsreq - values$trialsleft + 1, "of", values$trialsreq), paste(values$lpp - values$lppleft + 1, "of", values$lpp))))
     })
     
     observe({
@@ -206,7 +202,7 @@ shinyServer(function(input, output, session) {
     output$lineup <- renderUI({
         if (values$lppleft == 0 || !input$ready) return(NULL)
         
-        withProgress(message = paste(values$result, "Loading", ifelse(values$trialsleft > 0, "trial", ""), "plot", ifelse(values$trialsleft > 0, paste(experiment_props()[1,"trials_req"] - values$trialsleft + 1, "of", experiment_props()[1,"trials_req"]), paste(experiment_props()[1,"lpp"] - values$lppleft + 1, "of", experiment_props()[1,"lpp"]))), expr = {            
+        withProgress(message = paste(values$result, "Loading", ifelse(values$trialsleft > 0, "trial", ""), "plot", ifelse(values$trialsleft > 0, paste(values$trialsreq - values$trialsleft + 1, "of", values$trialsreq), paste(values$lpp - values$lppleft + 1, "of", values$lpp))), expr = {            
             values$submitted
             
             values$starttime <- now()
@@ -216,19 +212,18 @@ shinyServer(function(input, output, session) {
             
             con <- dbConnect(SQLite(), dbname = "data/turk.db")
             
-            lpp <- experiment_props()[1,"lpp"]
             if (trial == 0 && is.null(values$pics)) {
-                orderby <- paste0("ORDER BY CASE pic_id ", paste("WHEN", pic_ids, "THEN", 0:(lpp - 1), collapse = " "), " END")
+                orderby <- paste0("ORDER BY CASE pic_id ", paste("WHEN", pic_ids, "THEN", 0:(values$lpp - 1), collapse = " "), " END")
                 values$pics <- dbGetQuery(con, paste0("SELECT * FROM picture_details WHERE experiment = '", values$experiment, "' AND trial = ", trial, " AND pic_id IN (", paste(pic_ids, collapse = ","), ") ", orderby))
                 nextplot <- values$pics[1,]
             } else if (trial == 0 && !is.null(values$pics)) {
-                nextplot <- values$pics[lpp - values$lppleft + 1,]
+                nextplot <- values$pics[values$lpp - values$lppleft + 1,]
             } else if (trial == 1 && is.null(values$trial_pics)) {
                 orderby <- paste0("ORDER BY CASE pic_id ", paste("WHEN", trial_pic_ids, "THEN", 0:(length(trial_pic_ids) - 1), collapse = " "), " END")
                 values$trial_pics <- dbGetQuery(con, paste0("SELECT * FROM picture_details WHERE experiment = '", values$experiment, "' AND trial = ", trial, " AND pic_id IN (", paste(trial_pic_ids, collapse = ","), ") ", orderby))
                 nextplot <- values$trial_pics[1,]
             } else if (trial == 1 && !is.null(values$trial_pics)) {
-                nextplot <- values$trial_pics[experiment_props()[1,"trials_req"] - values$trialsleft + 1,]
+                nextplot <- values$trial_pics[values$trialsreq - values$trialsleft + 1,]
             }
             
             dbDisconnect(con)
