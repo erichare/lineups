@@ -6,7 +6,7 @@ library(RSQLite)
 
 shinyServer(function(input, output, session) {
     
-    values <- reactiveValues(question = "", experiment = NULL, pics = NULL, submitted = FALSE, choice = NULL, reasons = NULL, starttime = NULL, trialsreq = 0, trialsleft = 0, lpp = 0, lppleft = 0, pic_id = 0, choice = NULL, correct = NULL, result = "")
+    values <- reactiveValues(question = "", experiment = "", pics = NULL, submitted = FALSE, choice = NULL, reasons = NULL, starttime = NULL, trialsreq = 0, trialsleft = 0, lpp = 0, lppleft = 0, pic_id = 0, choice = NULL, correct = NULL, result = "")
     
     experiment_choices <- reactive({
         con <- dbConnect(SQLite(), dbname = "data/turk.db")
@@ -15,7 +15,7 @@ shinyServer(function(input, output, session) {
         
         dbDisconnect(con)
         
-        return(experiments$experiment, decreasing = TRUE)
+        return(sort(experiments$experiment))
     })
     
     observe({
