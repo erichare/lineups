@@ -6,7 +6,7 @@ library(RSQLite)
 
 shinyServer(function(input, output, session) {
     
-    values <- reactiveValues(question = "", pics = NULL, submitted = FALSE, choice = NULL, reasons = NULL, starttime = NULL, trialsreq = 0, trialsleft = 0, lpp = 0, lppleft = 0, pic_id = 0, choice = NULL, correct = NULL, result = "")
+    values <- reactiveValues(question = "", experiment = NULL, pics = NULL, submitted = FALSE, choice = NULL, reasons = NULL, starttime = NULL, trialsreq = 0, trialsleft = 0, lpp = 0, lppleft = 0, pic_id = 0, choice = NULL, correct = NULL, result = "")
     
     experiment_choices <- reactive({
         con <- dbConnect(SQLite(), dbname = "data/turk.db")
@@ -15,7 +15,7 @@ shinyServer(function(input, output, session) {
         
         dbDisconnect(con)
         
-        return(sort(experiments$experiment, decreasing = TRUE))
+        return(experiments$experiment, decreasing = TRUE)
     })
     
     observe({
@@ -97,6 +97,8 @@ shinyServer(function(input, output, session) {
     })
     
     output$example1_plot <- renderImage({
+        if (is.null(values$experiment)) return(NULL)
+        
         list(src = file.path("experiments", values$experiment, "examples", "example1.png"),
              contentType = 'image/png',
              width = 600,
@@ -116,6 +118,8 @@ shinyServer(function(input, output, session) {
     })
     
     output$example2_plot <- renderImage({
+        if (is.null(values$experiment)) return(NULL)
+        
         list(src = file.path("experiments", values$experiment, "examples", "example2.png"),
              contentType = 'image/png',
              width = 600,
