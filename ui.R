@@ -8,6 +8,7 @@ fluidPage(theme = shinytheme("cerulean"),
           
     sidebarLayout(
         sidebarPanel(width = 3,
+            textOutput("debug"),
             conditionalPanel(condition = "!input.expchosen",
                              selectizeInput("expname", "Experiment", choices = NULL),
                              actionButton("confirmexp", "Confirm Choice")

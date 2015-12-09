@@ -15,12 +15,14 @@ shinyServer(function(input, output, session) {
         
         dbDisconnect(con)
         
-        return(experiments$experiment)
+        return(sort(experiments$experiment, decreasing = TRUE))
     })
     
     observe({
         updateSelectizeInput(session, "expname", choices = experiment_choices())
     })
+    
+    output$debug <- renderText({return(values$question)})
     
     observeEvent(input$confirmexp, {
         if (nchar(input$expname) > 0) {
@@ -102,11 +104,11 @@ shinyServer(function(input, output, session) {
     }, deleteFile = FALSE)
     
     output$example1_a <- renderUI({
-        return(HTML("
+        return(HTML(paste0("
             Your choice: <b>Plot 3</b><br/>
-            Reasoning: <b>Strongest Linear Trend</b><br/>
+            Reasoning: <b>", values$reasons[1], "</b><br/>
             How certain are you: <b>Very Certain</b><br/>
-        "))
+        ")))
     })
     
     output$example2_q <- renderText({
@@ -121,11 +123,11 @@ shinyServer(function(input, output, session) {
     }, deleteFile = FALSE)
     
     output$example2_a <- renderUI({
-        return(HTML("
-                    Your choice: <b>Plot 5</b><br/>
-                    Reasoning: <b>Groups Separated</b><br/>
+        return(HTML(paste0("
+                    Your choice: <b>Plot 2</b><br/>
+                    Reasoning: <b>", values$reasons[1], "</b><br/>
                     How certain are you: <b>Certain</b><br/>
-                    "))
+                    ")))
     })
     
     output$demo_text <- renderText({
