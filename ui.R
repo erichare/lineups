@@ -8,7 +8,6 @@ fluidPage(theme = shinytheme("cerulean"),
           
     sidebarLayout(
         sidebarPanel(width = 3,
-            textOutput("question"),
             conditionalPanel(condition = "!input.expchosen",
                              selectizeInput("expname", "Experiment", choices = NULL),
                              actionButton("confirmexp", "Confirm Choice")
@@ -77,6 +76,7 @@ fluidPage(theme = shinytheme("cerulean"),
         ),
         
         mainPanel(width = 9,
+            h4(textOutput("debug")),
             conditionalPanel(condition = "!input.expchosen",
                     h4("Description of Experiments"),
                     helpText("Experiment #16: Examining the use of color and its effect on the perception of plots."),
@@ -99,8 +99,9 @@ fluidPage(theme = shinytheme("cerulean"),
             conditionalPanel(condition = "input.welcome && !input.ready",
                 h4(textOutput("demo_text"))
             ),
-            conditionalPanel(condition = "input.ready",
-                h4(textOutput("debug"))
+            
+            conditionalPanel(condition = "input.ready"
+                #h4(textOutput("question"))
                 #conditionalPanel(condition = "input.done",
                 #    HTML("<a href='https://prolificacademic.co.uk/submissions/56293369c8ffc200055132fd/complete?cc=XYA822O3'>https://prolificacademic.co.uk/submissions/56293369c8ffc200055132fd/complete?cc=XYA822O3</a>")
                 #)
