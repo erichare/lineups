@@ -76,7 +76,7 @@ fluidPage(theme = shinytheme("cerulean"),
         ),
         
         mainPanel(width = 9,
-            h4(textOutput("debug")),
+            #h4(textOutput("debug")),
             conditionalPanel(condition = "!input.expchosen",
                     h4("Description of Experiments"),
                     helpText("Experiment #16: Examining the use of color and its effect on the perception of plots."),
