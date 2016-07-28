@@ -89,19 +89,27 @@ fluidPage(theme = shinytheme("cerulean"),
                 uiOutput("welcome_text"),
                 
                 h4(textOutput("example1_q")),
-                imageOutput("example1_plot", height = "150px"),
+                imageOutput("example1_plot"),
+                
+                br(),
+                br(),
+                
                 uiOutput("example1_a"),
                 
                 h4(textOutput("example2_q")),
-                imageOutput("example2_plot", height = "150px"),
+                imageOutput("example2_plot"),
+                
+                br(),
+                br(),
+                
                 uiOutput("example2_a")
             ),
             conditionalPanel(condition = "input.welcome && !input.ready",
                 h4(textOutput("demo_text"))
             ),
             
-            conditionalPanel(condition = "input.ready"
-                #h4(textOutput("question"))
+            conditionalPanel(condition = "input.ready",
+                h3(textOutput("question"))
                 #conditionalPanel(condition = "input.done",
                 #    HTML("<a href='https://prolificacademic.co.uk/submissions/56293369c8ffc200055132fd/complete?cc=XYA822O3'>https://prolificacademic.co.uk/submissions/56293369c8ffc200055132fd/complete?cc=XYA822O3</a>")
                 #)

@@ -15,7 +15,7 @@ shinyServer(function(input, output, session) {
         
         dbDisconnect(con)
         
-        return(sort(experiments$experiment))
+        return(sort(experiments$experiment, decreasing = TRUE))
     })
     
     observe({
@@ -100,9 +100,7 @@ shinyServer(function(input, output, session) {
         if (is.null(values$experiment)) return(NULL)
         
         list(src = file.path("experiments", values$experiment, "examples", "example1.png"),
-             contentType = 'image/png',
-             width = 600,
-             height = 150)
+             contentType = 'image/png')
     }, deleteFile = FALSE)
     
     output$example1_a <- renderUI({
@@ -121,9 +119,7 @@ shinyServer(function(input, output, session) {
         if (is.null(values$experiment)) return(NULL)
         
         list(src = file.path("experiments", values$experiment, "examples", "example2.png"),
-             contentType = 'image/png',
-             width = 600,
-             height = 150)
+             contentType = 'image/png')
     }, deleteFile = FALSE)
     
     output$example2_a <- renderUI({
