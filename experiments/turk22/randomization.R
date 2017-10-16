@@ -10,7 +10,9 @@ k <- sample(c(1:6, 1:6))
 # rep
 l <- sample(c(1:3, 1:3, 1:3, 1:3))
 # goodness-of-fit plots to sample from
-dat <- sample(c(9931, 9941, 9951),1)
+g <- sample(3:6, 1)
+f <- sample(1:3, 1)
+dat <- paste0(99,g,f)
 # combine all 13 
 pic_ids <- c(paste0(i,j,k,l), dat)[sample(13,13)]
 
