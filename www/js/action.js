@@ -60,9 +60,21 @@ function writeSelectedPanels(evt, i){
 //  alert("id of currentTarget (test message 1): "+ x.id);
  var y = document.getElementById("multi_response_no");
 // alert("test message 2 "+ y);
-  var plot = x.id.substring(6,x.id.indexOf('.'));
+  var plotStr = x.id.substring(6,x.id.indexOf('.'));
+  var plot;
+  if (plotStr.length <= 2) plot = plotStr;
+  else {
+    if (plotStr.startsWith("1-1")) plot = 1;
+    if (plotStr.startsWith("3-1")) plot = 2;
+    if (plotStr.startsWith("2-2")) plot = 3;
+    if (plotStr.startsWith("2-1")) plot = 4;
+    if (plotStr.startsWith("1-2")) plot = 5;
+    if (plotStr.startsWith("3-2")) plot = 6;
+  }
+  debugger;
 //  y.innerHTML = response;
 //alert("Hello World 2")
+    
    var responses = document.getElementById('response_no').value;
    if (responses.length < 1) {
       responses = plot ;
