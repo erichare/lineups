@@ -149,7 +149,8 @@ shinyServer(function(input, output, session) {
     })
     
     observeEvent(input$submit, {
-        if (nchar(input$response_no) > 0 && all(strsplit(input$response_no, ",")[[1]] %in% 1:20) && 
+        response <- as.character(input$response_no)
+        if (nchar(response) > 0 && all(strsplit(response, ",")[[1]] %in% 1:20) && 
             values$lppleft > 0 && (length(input$reasoning) > 0 || (nchar(input$other) > 0)) && nchar(input$certain) > 0) {
             
             disable("submit")
@@ -160,7 +161,7 @@ shinyServer(function(input, output, session) {
             }
             reason <- paste(reason, collapse = ", ")
             
-            values$choice <- as.character(input$response_no)
+            values$choice <- response
 
             if (values$trialsleft == 0 && values$lppleft > 0) {
                 values$result <- "Submitted!"
@@ -198,6 +199,8 @@ shinyServer(function(input, output, session) {
             }            
             
             values$submitted <- TRUE
+        } else {
+            showNotification("Fill in all of the boxes.")
         }
     })
         
