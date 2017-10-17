@@ -1,5 +1,6 @@
 # # randomization scheme for experiment
-trial_pic_ids <- sample(1:20, size = 2)
+trial_pic_ids <- paste0(sample(c(3,4,5,6,7), size = 2),
+                        c(1,5)[sample(2,2)], 1)
 # Factors: difficulty, sign, model, rep
 # difficulty
 i <- sample(c(1:3, 1:3, 1:3, 1:3))

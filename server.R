@@ -105,7 +105,7 @@ shinyServer(function(input, output, session) {
     
     output$example1_a <- renderUI({
         return(HTML(paste0("
-            Your choice: <b>Plot 3</b><br/>
+            Your choice: <b>Plot 4</b><br/>
             Reasoning: <b>", values$reasons[1], "</b><br/>
             How certain are you: <b>Very Certain</b><br/>
         ")))
@@ -124,8 +124,8 @@ shinyServer(function(input, output, session) {
     
     output$example2_a <- renderUI({
         return(HTML(paste0("
-                    Your choice: <b>Plot 2</b><br/>
-                    Reasoning: <b>", values$reasons[1], "</b><br/>
+                    Your choice: <b>Plot 1</b><br/>
+                    Reasoning: <b>", values$reasons[2], "</b><br/>
                     How certain are you: <b>Certain</b><br/>
                     ")))
     })

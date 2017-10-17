@@ -13,9 +13,9 @@ server <- function(input, output, session) {
         try_picture_details <- read.csv(input$try_picture_details$datapath, stringsAsFactors = FALSE)
         
         ## Cleanup
-        picture_details$pic_name <- gsub("Images/Lineups/svgs/", "", as.character(picture_details$pic_name))
+        picture_details$pic_name <- gsub(".*/(.*\\.svg)", "\\1", as.character(picture_details$pic_name))
         picture_details$trial <- 0
-        try_picture_details$pic_name <- gsub("Images/Lineups/svgs/", "", as.character(try_picture_details$pic_name))
+        try_picture_details$pic_name <- gsub(".*/(.*\\.svg)", "\\1", as.character(try_picture_details$pic_name))
         try_picture_details$trial <- 1
         
         deets <- rbind(picture_details, try_picture_details)

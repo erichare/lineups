@@ -82,7 +82,9 @@ fluidPage(theme = shinytheme("cerulean"),
                     helpText("Experiment #16: Examining the use of color and its effect on the perception of plots."),
                     helpText("Experiment #18: Investigating the perception of association between variables in plots."),
                     helpText("Experiment #19: Follow up to Experiment #16, examining the use of color and its effect on the perception of plots."),
-                    helpText("Experiment #20: Pilot study assessing the similarity between curves derived from images of bullets.")
+                    helpText("Experiment #20: Pilot study assessing the similarity between curves derived from images of bullets."),
+                    helpText("Experiment #21: Pilot study on the simple and complex structures in graphs."),
+                    helpText("Experiment #22: Study on graphs and structure that is seen in spite of randomness.")
             ),
             conditionalPanel(condition = "input.expchosen && !input.welcome",
                 h4(textOutput("welcome_header")),
