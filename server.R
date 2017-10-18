@@ -2,6 +2,7 @@ library(shiny)
 library(shinyjs)
 library(ggplot2)
 library(lubridate)
+library(dplyr)
 library(RSQLite)
 
 shinyServer(function(input, output, session) {
@@ -17,6 +18,19 @@ shinyServer(function(input, output, session) {
         
         return(sort(experiments$experiment, decreasing = TRUE))
     })
+    
+    output$downloadDB <- downloadHandler(
+        filename = function() { paste0(values$experiment, "_results.csv") },
+        content = function(conn) {
+            con <- dbConnect(SQLite(), dbname = "data/turk.db")
+            feedback <- dbReadTable(con, "feedback")
+            
+            this_feedback <- feedback %>%
+                filter(description == values$experiment)
+            
+            write.csv(this_feedback, conn, row.names = FALSE)
+        }
+    )
     
     observe({
         updateSelectizeInput(session, "expname", choices = experiment_choices())
@@ -40,6 +54,8 @@ shinyServer(function(input, output, session) {
             values$trialsleft <- myexp[1,"trials_req"]
             
             dbDisconnect(con)
+            
+            #enable("downloadDB")
             
             updateCheckboxInput(session, "expchosen", value = TRUE)
             source(file.path("experiments", input$expname, "randomization.R"))

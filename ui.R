@@ -104,7 +104,14 @@ fluidPage(theme = shinytheme("cerulean"),
                 br(),
                 br(),
                 
-                uiOutput("example2_a")
+                uiOutput("example2_a"),
+                
+                hr(),
+                
+                textInput("password", ""),
+                conditionalPanel(condition = paste0("input.password == '", readLines("password.txt"), "'"),
+                                 downloadButton("downloadDB", "Download DB")
+                )
             ),
             conditionalPanel(condition = "input.welcome && !input.ready",
                 h4(textOutput("demo_text"))
