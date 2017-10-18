@@ -11,7 +11,7 @@ k <- sample(c(1:6, 1:6))
 # rep
 l <- sample(c(1:3, 1:3, 1:3, 1:3))
 # goodness-of-fit plots to sample from
-g <- sample(3:6, 1)
+g <- sample(c(3,4,5,7), 1)
 f <- sample(1:3, 1)
 dat <- paste0(99,g,f)
 # combine all 13 
