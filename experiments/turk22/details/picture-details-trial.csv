@@ -1,11 +1,11 @@
 pic_id,sample_size,test_param,param_value,p_value,obs_plot_location,pic_name,experiment,difficulty,data_name
-711,NA,7,1,NA,6,Lineup-Images/senate/ForExperiment10-15/trials//file23c2825ce9b.svg,turk22,NA,bigmod_1_1.csv
-751,NA,7,5,NA,4,Lineup-Images/senate/ForExperiment10-15/trials//file23c1fe41453.svg,turk22,NA,bigmod_M-1_1.csv
-311,NA,3,1,NA,4,Lineup-Images/senate/ForExperiment10-15/trials//file23c27aeae60.svg,turk22,NA,jttp_1_1.csv
+311,NA,3,1,NA,5,SenateLineupData/redos/svgs/file8c202fcbb7f.svg,turk22,NA,trial_jttp_1_1.csv
 351,NA,3,5,NA,3,Lineup-Images/senate/ForExperiment10-15/trials//file23c4ee8638b.svg,turk22,NA,jttp_M-1_1.csv
-411,NA,4,1,NA,5,Lineup-Images/senate/ForExperiment10-15/trials//file23c5a42c205.svg,turk22,NA,jtts_1_1.csv
+411,NA,4,1,NA,4,SenateLineupData/redos/svgs/file8c202e6a7575.svg,turk22,NA,trial_jtts_1_1.csv
 451,NA,4,5,NA,4,Lineup-Images/senate/ForExperiment10-15/trials//file23c68fafbb6.svg,turk22,NA,jtts_M-1_1.csv
+511,NA,5,1,NA,1,SenateLineupData/redos/svgs/file8c203dfba55e.svg,turk22,NA,trial_simttb_1_1.csv
+551,NA,5,5,NA,1,Lineup-Images/senate/ForExperiment10-15/trials//file23c74099888.svg,turk22,NA,simttb_M-1_1.csv
 611,NA,6,1,NA,1,Lineup-Images/senate/ForExperiment10-15/trials//file23c60ce0acc.svg,turk22,NA,samettp_1_1.csv
 651,NA,6,5,NA,5,Lineup-Images/senate/ForExperiment10-15/trials//file23c10f19eeb.svg,turk22,NA,samettp_M-1_1.csv
-511,NA,5,1,NA,1,Lineup-Images/senate/ForExperiment10-15/trials//file23c3d0389d7.svg,turk22,NA,simttb_1_1.csv
-551,NA,5,5,NA,1,Lineup-Images/senate/ForExperiment10-15/trials//file23c74099888.svg,turk22,NA,simttb_M-1_1.csv
+711,NA,7,1,NA,6,SenateLineupData/redos/svgs/file8c2031731e63.svg,turk22,NA,trial_bigmod_1_1.csv
+751,NA,7,5,NA,4,Lineup-Images/senate/ForExperiment10-15/trials//file23c1fe41453.svg,turk22,NA,bigmod_M-1_1.csv
